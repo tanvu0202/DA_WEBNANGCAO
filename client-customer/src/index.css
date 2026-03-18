@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* src/index.css */
+@import 'typeface-roboto';
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+.bg-introduction{
+  background-image: url('../src/asset/img/introduction.jpg');
+  background-repeat: no-repeat;
+  background-position:unset;
+  background-size: cover;
+  object-fit: cover;
+}
+
+.fancy-underline:after {
+  background: url(http://steamark.monamedia.net/wp-content/themes/flatsome/assets/img/underline.png) 50% top no-repeat;
+  background-size: 100% 9px;
+  border-radius: 999px;
+  /* color: green; */
+  content: "";
+  height: 9px;
+  image-rendering: -webkit-optimize-contrast;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 100%;
+}
+
+.select-resize-ghost, .select2-container .select2-choice, .select2-container .select2-selection, input[type=date], input[type=email], input[type=number], input[type=password], input[type=search], input[type=tel], input[type=text], input[type=url], select, textarea {
+  background-color: #fff;
+  border-radius: 0;
+  box-sizing: border-box;
+  color: #333;
+  font-size: .97em;
+  height: 2.507em;
+  max-width: 100%;
+  padding: 0 .75em;
+  transition: color .3s, border .3s, background .3s, opacity .3s;
+  vertical-align: middle;
+  width: 100%;
+}
+
+/* styles.css */
+.container-80{
+    width: 1150px;
+    height: fit-content;
+    margin: 0px auto;
+  }
+  .body-admin {
+    width: fit-content;
+    height: fit-content;
+    margin: 0px auto;
+  }
+  div.inline {
+    display: inline-block;
+  }
+  figure.caption-right {
+    display: flex;
+    align-items: center;
+  }
+  .align-center {
+    width: fit-content;
+    margin: 0px auto;
+  }
+  .align-valign-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 0px 20px 20px 20px;
+    border: 1px solid black;
+  }
+  .text-center {
+    text-align: center;
+  }
+  span.link {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+  }
+  /* menu.css */
+  div.border-bottom {
+    border-bottom: 1px solid black;
+    padding: 10px 0px 10px 0px;
+  }
+  div.float-left {
+    float: left;
+  }
+  div.float-right {
+    float: right;
+  }
+  div.float-clear {
+    clear: both;
+  }
+  ul.menu {
+    margin: 0px;
+    padding: 0px;
+  }
+  li.menu {
+    display: inline;
+    margin-right: 20px;
+    text-transform: uppercase;
+  }
+  form.search {
+    margin: 0px;
+  }
+  input.keyword {
+    width: 110px;
+  }
+  /* datatable.css */
+  .datatable {
+    text-align: center;
+    border-collapse: collapse;
+  }
+  /* header */
+  tr:first-child.datatable {
+    background-color: #ffcc00;
+  }
+  /* even rows, except header */
+  tr:not(:first-child):nth-child(even).datatable {
+    background-color: #f5f5f5;
+  }
+  /* odd rows, except header */
+  tr:not(:first-child):nth-child(odd).datatable {
+    background-color: #ffeeaa;
+  }
+  /* except header */
+  tr:not(:first-child):hover.datatable {
+    background-color: #dcfcfc;
+    cursor: pointer;
+  }

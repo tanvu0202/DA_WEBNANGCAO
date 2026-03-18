@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.ant-pagination .ant-pagination-item-active a {
+    color: #8d613a !important;
+  }
+  .ant-pagination .ant-pagination-item-active {
+  
+    border-color: #8d613a !important;
+  }
+  
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled),
+  .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::befor{
+    color: #c89979 !important;
+    border-color: #c89979 !important;
+  }
