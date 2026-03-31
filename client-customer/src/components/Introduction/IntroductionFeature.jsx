@@ -4,7 +4,7 @@ export default function IntroductionFeature() {
   return (
     <div className='container-80 py-10'>
         <div className="text-center">
-            <p className='text-2xl font-medium'>Công ty cổ phần Minh Man Toàn Cầu</p>
+            <p className='text-2xl font-medium'>Hãng Coffee Số 1 Toàn Cầu</p>
             <p className='text-accent text-xl mt-4'>Cung cấp cho khách hàng sản phẩm và dịch vụ với chất lượng cao và ngày càng hoàn <br /> thiện, góp phần nâng cao chất lượng sống cho cộng đồng.</p>
         </div>
         <div className="pt-10">
@@ -19,7 +19,7 @@ export default function IntroductionFeature() {
                         </div>
                         <div>
                             <p className='text-secondary font-medium text-xl'>Tầm nhìn</p>
-                            <p className='text-base text-accent'>Phấn đấu để trở thành một trong những Công ty hàng đầu tại Việt Nam về lĩnh vực bán lẻ đồ uống, sách báo trong các cửa hàng kinh doanh.</p>
+                            <p className='text-base text-accent'>Phấn đấu để trở thành một trong những Công ty hàng đầu tại Việt Nam về lĩnh vực bán coffee, tại các cửa hàng kinh doanh.</p>
                         </div>
                     </div>
 
@@ -39,7 +39,7 @@ export default function IntroductionFeature() {
                         </div>
                         <div>
                             <p className='text-secondary font-medium text-xl'>Triết lý kinh doanh</p>
-                            <p className='text-base text-accent'>Khiêm tốn - Thật thà - Dũng cảm.</p>
+                            <p className='text-base text-accent'>Đẳng cấp - Chuyên nghiệp - Đổi mới.</p>
                         </div>
                     </div>
                 </div>

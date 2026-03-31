@@ -2,10 +2,11 @@ import React from "react";
 
 export default function ContactComponent() {
   return (
-    <div className="">
+    <div className="bg-[#fffcf9] py-10">
       <div className="container-80">
         <section className="text-gray-600 body-font relative">
-          <div className="absolute inset-0 bg-gray-300 z-0">
+          {/* Bản đồ với filter màu ấm hơn thay vì xám lạnh */}
+          <div className="absolute inset-0 bg-stone-200 z-0 rounded-3xl overflow-hidden shadow-inner">
             <iframe
               width="100%"
               height="100%"
@@ -14,49 +15,62 @@ export default function ContactComponent() {
               marginWidth={0}
               title="map"
               scrolling="no"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.7878741521363!2d106.69744041088626!3d10.8275391892799!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317528f4a62fce9b%3A0xc99902aa1e26ef02!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBWxINuIExhbmcgLSBDxqEgc-G7nyBjaMOtbmg!5e0!3m2!1svi!2s!4v1721272851848!5m2!1svi!2s"
-              style={{ filter: "grayscale(1) contrast(1.7) opacity(0.4)" }}
+              src="https://maps.google.com/maps?q=Hồ%20Chí%20Minh&t=&z=13&ie=UTF8&iwloc=&output=embed"
+              style={{ filter: "sepia(0.3) contrast(1.2) opacity(0.7)" }}
             ></iframe>
           </div>
+
           <div className="container px-5 py-24 mx-auto flex">
-            <div className="lg:w-1/3 md:w-1/2 bg-white rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0 relative z-10 shadow-md">
-              <h2 className="text-gray-900 text-lg mb-1 font-medium title-font">
-                Liên hệ
+            <div className="lg:w-1/3 md:w-1/2 bg-white/95 backdrop-blur-sm rounded-[2rem] p-10 flex flex-col md:ml-auto w-full mt-10 md:mt-0 relative z-10 shadow-2xl border border-orange-100">
+              <span className="text-orange-600 font-bold tracking-widest text-xs mb-1 uppercase">Kết nối với chúng tôi</span>
+              <h2 className="text-[#442c1e] text-3xl mb-2 font-serif font-bold title-font">
+                Ghé thăm Quán
               </h2>
-              <p className="leading-relaxed mb-5 text-gray-600">
-                Liên hệ với chúng tôi để nhận được những ưu đãi mới nhất.
+              <p className="leading-relaxed mb-6 text-stone-500 italic">
+                Để lại lời nhắn, chúng mình sẽ phản hồi bạn bên tách cafe ấm nóng.
               </p>
+
+              {/* Email Input */}
               <div className="relative mb-4">
                 <label
                   htmlFor="email"
-                  className="leading-7 text-sm text-gray-600"
+                  className="leading-7 text-sm font-semibold text-[#442c1e]"
                 >
-                  Email
+                  Email của bạn
                 </label>
                 <input
                   type="email"
                   id="email"
                   name="email"
-                  className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                  placeholder="example@gmail.com"
+                  className="w-full bg-stone-50 rounded-xl border border-stone-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 text-base outline-none text-gray-700 py-2 px-4 leading-8 transition-colors duration-200 ease-in-out"
                 />
               </div>
+
+              {/* Message Textarea */}
               <div className="relative mb-4">
                 <label
                   htmlFor="message"
-                  className="leading-7 text-sm text-gray-600"
+                  className="leading-7 text-sm font-semibold text-[#442c1e]"
                 >
-                  Lời nhắn
+                  Lời nhắn cho chúng mình
                 </label>
                 <textarea
                   id="message"
                   name="message"
-                  className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"
-                  defaultValue={""}
+                  placeholder="Bạn muốn đặt bàn hay góp ý điều gì?..."
+                  className="w-full bg-stone-50 rounded-xl border border-stone-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 h-32 text-base outline-none text-gray-700 py-2 px-4 resize-none leading-6 transition-colors duration-200 ease-in-out"
                 />
               </div>
-              <button className="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">
-                Gửi
+
+              {/* Submit Button */}
+              <button className="text-white bg-[#442c1e] border-0 py-3 px-8 focus:outline-none hover:bg-[#5d3f2d] rounded-full text-lg font-bold shadow-lg shadow-orange-900/20 transition-all active:scale-95">
+                Gửi lời nhắn
               </button>
+
+              <p className="text-xs text-stone-400 mt-4 text-center">
+                Hotline: 0123 456 789 | Mở cửa: 07:00 - 22:00
+              </p>
             </div>
           </div>
         </section>

@@ -1,6 +1,11 @@
 import React from 'react';
 import { Carousel } from 'antd';
 
+import banner1 from './banner1.png';
+import banner2 from './banner2.png';
+import banner3 from './banner3.png';
+import banner4 from './banner4.png';
+
 export default function CarouselComponent() {
   const contentStyle = {
     height: '500px',
@@ -14,14 +19,14 @@ export default function CarouselComponent() {
     <Carousel autoplay>
         <div>
         <img
-          src="http://steamark.monamedia.net/wp-content/uploads/2023/07/lo%CC%A3%CC%82-tri%CC%80nh-ho%CC%A3c-robot-scaled.jpg"
+          src={banner1}
           alt="Image 2"
           className='w-full h-[400px] object-cover'
         />
       </div>
       <div>
         <img
-          src="http://steamark.monamedia.net/wp-content/uploads/2023/07/ISA-scaled.jpg"
+          src={banner2}
           alt="Image 1"
           className='w-full h-[400px] object-cover'
         />
@@ -29,8 +34,16 @@ export default function CarouselComponent() {
       
       <div>
         <img
-          src="http://steamark.monamedia.net/wp-content/uploads/2023/07/BO%CC%A3%CC%82-HO%CC%A3C-CU%CC%A3-JELLO-1-scaled.jpg"
+          src={banner3}
           alt="Image 3"
+          className='w-full h-[400px] object-cover'
+        />
+      </div>
+
+            <div>
+        <img
+          src={banner4}
+          alt="Image 4"
           className='w-full h-[400px] object-cover'
         />
       </div>

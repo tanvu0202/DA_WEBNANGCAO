@@ -32,7 +32,7 @@ const FooterComponent = () => {
               <li className='tracking-wide border-b border-[#666666] py-2 transition-all duration-300 hover:text-[#F7941E] cursor-pointer'>Điều khoản sử dụng</li>
               <li className='tracking-wide border-b border-[#666666] py-2 transition-all duration-300 hover:text-[#F7941E] cursor-pointer'>Chính sách bảo mật</li>
               <li className='tracking-wide border-b border-[#666666] py-2 transition-all duration-300 hover:text-[#F7941E] cursor-pointer'>Giới thiệu Steamark</li>
-              <li className='tracking-wide border-b border-[#666666] py-2 transition-all duration-300 hover:text-[#F7941E] cursor-pointer'>Hệ thống trung tâm - nhà sách</li>
+              <li className='tracking-wide border-b border-[#666666] py-2 transition-all duration-300 hover:text-[#F7941E] cursor-pointer'>Hệ thống trung tâm - Next Cofee</li>
             </ul>
           </div>
           <div className="w-full md:w-1/4 p-4">
@@ -60,13 +60,13 @@ const FooterComponent = () => {
                 <div className="w-8 h-8 border-2 border-accent leading-8 flex items-stretch justify-center pt-2 px-2">
                   <FaMapMarkerAlt  />  
                 </div> 
-                <p className='ml-2'>1073/23 Cách Mạng Tháng 8, P.7, Q.Tân Bình, TP.HCM</p>
+                <p className='ml-2'>69/68 Đặng Thùy Trâm, Phường 13, Quận Bình Thạnh, TP.HCM</p>
               </li>
               <li className='flex items-center tracking-wide border-b border-[#666666] py-2 transition-all duration-300 hover:text-[#F7941E] cursor-pointer'>
                 <div className="w-8 h-8 border-2 border-accent leading-8 flex items-stretch justify-center pt-2">
                   <FaPhoneAlt />  
                 </div>
-                <p className='ml-2'>0981045632</p>
+                <p className='ml-2'>0823433917</p>
               </li>
               <li className='flex items-center tracking-wide border-b border-[#666666] py-2 transition-all duration-300 hover:text-[#F7941E] cursor-pointer'>
                 <div className="w-8 h-8 border-2 border-accent leading-8 flex items-stretch justify-center pt-2">
@@ -83,13 +83,13 @@ const FooterComponent = () => {
               <img className="h-full w-12" src={logo} alt="Logo" />
               <div>
                 <p className="tracking-wide">
-                  HHK<span className="text-[#7f13c4]">.Store</span>
+                  Next<span className="text-[#4B2E2B]">Coffe</span>
                 </p>
               </div>
           </div>
             <div className="text-accent text-sm font-normal">
-            <p className='py-3'>1073/23 Cách Mạng Tháng 8, P.7, Q.Tân Bình, TP.HCM</p>
-            <p>HHK Store nhận đặt hàng trực tuyến và giao hàng tận nơi. KHÔNG hỗ trợ đặt mua và nhận hàng trực tiếp tại văn phòng cũng như tất cả Hệ Thống HHK Store trên toàn quốc.</p>  
+            <p className='py-3'>69/68 Đặng Thùy Trâm, Phường 13, Quận Bình Thạnh, TP.HCM</p>
+            <p>Next Coffe nhận đặt hàng trực tuyến và giao hàng tận nơi. KHÔNG hỗ trợ đặt mua và nhận hàng trực tiếp tại văn phòng cũng như tất cả Hệ Thống Next Coffee trên toàn quốc.</p>  
             </div>
           </div>
           <div className="container mx-auto flex flex-wrap justify-center items-center">
@@ -117,7 +117,7 @@ const FooterComponent = () => {
         © Thiết kế và lập trình bởi <div className="flex items-center h-[18px] gap-1">
               <div className='text-white font-semibold'>
                 <p className="tracking-wide">
-                  HHK<span className="text-white">.Store</span>
+                  Next<span className="text-white">Coffee</span>
                 </p>
               </div>
           </div>
