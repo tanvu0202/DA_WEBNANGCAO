@@ -1,13 +1,12 @@
 import axios from 'axios';
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import withRouter from '../utils/withRouter';
 import logo from '../asset/img/logo.jpg';
 import { FaSearch, FaShoppingCart } from 'react-icons/fa';
 import MyContext from '../contexts/MyContext';
 import Swal from 'sweetalert2';
-import Category from './Category'; // Import the Category component
-import CarouselComponent from './CarouselComponent/CarouselComponent';
+import Category from './Category'; 
 
 class Menu extends Component {
   constructor(props) {
@@ -20,20 +19,14 @@ class Menu extends Component {
   }
   static contextType = MyContext;
 
-  toggleDropdown = () => {
-    this.setState((prevState) => ({
-      dropdownOpen: !prevState.dropdownOpen
-    }));
-  };
-
   btnSearchClick = (e) => {
     e.preventDefault();
     if (!this.state.txtKeyword) {
       Swal.fire({
         icon: 'warning',
-        title: 'Lỗi',
-        text: 'Vui lòng nhập tên sản phẩm cần tìm',
-        confirmButtonColor: '#21499a'
+        title: 'Tìm kiếm',
+        text: 'Bạn muốn thưởng thức món gì hôm nay?',
+        confirmButtonColor: '#4B2E2B'
       });
       return;
     }
@@ -46,8 +39,7 @@ class Menu extends Component {
 
   apiGetCategories() {
     axios.get('/api/customer/categories').then((res) => {
-      const result = res.data;
-      this.setState({ categories: result });
+      this.setState({ categories: res.data });
     });
   }
 
@@ -55,50 +47,69 @@ class Menu extends Component {
     const { categories } = this.state;
 
     return (
-      <div className="py-3">
-        <div className="flex items-center justify-between container-80">
-          <div className="logo h-[50px] flex items-center text-gray-700 text-[22px] font-bold gap-2">
-            <img className="h-full w-16" src={logo} alt="Logo" />
-            <Link to='/'>
-              <p className="tracking-wide">
-                HHK<span className="text-[#7f13c4]">.Store/Book</span>
-              </p>
-              <p className="text-[13.5px] text-accent font-medium italic font-sans leading-none">Tôi bán tri thức</p>
+      <div className="bg-white">
+        {/* Upper Menu: Logo, Search, Cart */}
+        <div className="py-5 flex items-center justify-between container-80">
+          {/* Logo Section */}
+          <div className="flex items-center gap-3">
+            <Link to='/' className="flex items-center gap-3 group">
+              <img className="h-12 w-12 rounded-full object-cover border-2 border-orange-100 group-hover:border-orange-400 transition-all shadow-sm" src={logo} alt="Logo" />
+              <div>
+                <p className="text-2xl font-serif font-bold text-[#2d1b0f] leading-none tracking-tight">
+                  NextCoffee<span className="text-orange-600">.</span>
+                </p>
+                <p className="text-[11px] text-stone-400 font-medium uppercase tracking-[0.2em] mt-1">Premium Bean</p>
+              </div>
             </Link>
           </div>
 
-          <div className="flex justify-center items-center w-1/2">
-            <form className="relative w-full" onSubmit={this.btnSearchClick}>
+          {/* Search Bar - Phong cách bo tròn hiện đại */}
+          <div className="flex-1 max-w-xl mx-10">
+            <form className="relative group" onSubmit={this.btnSearchClick}>
               <input
                 type="search"
-                className="w-full border-2 border-primary rounded py-4 pl-4 pr-10 focus:outline-none focus:border-primary text-accent text-xs placeholder:text-[13px]"
-                placeholder="Tìm kiếm sản phẩm ..."
+                className="w-full bg-stone-50 border border-stone-200 rounded-full py-2.5 pl-5 pr-12 focus:outline-none focus:border-orange-400 focus:bg-white focus:ring-4 focus:ring-orange-50 transition-all text-sm placeholder:text-stone-400"
+                placeholder="Tìm tên cà phê, bánh ngọt..."
                 value={this.state.txtKeyword}
                 onChange={(e) => this.setState({ txtKeyword: e.target.value })}
               />
-              <button type="submit" className="absolute right-0 top-1 mt-2 mr-3 text-gray-700">
-                <FaSearch />
+              <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 bg-[#4B2E2B] p-2 rounded-full text-white hover:bg-orange-600 transition-colors shadow-md">
+                <FaSearch size={14} />
               </button>
             </form>
           </div>
           
-          <div className="relative flex items-center">
-            <Link to='/mycart' className="flex items-center text-gray-700">
-              <span className="mr-1 text-sm text-primary">Giỏ hàng</span>
-              <FaShoppingCart size={20} className="text-primary mr-1" />
-              <span className="absolute top-[8px] -right-2 text-[#7f13c4] rounded-full h-5 w-5 flex items-center justify-center text-sm font-semibold">
-                {this.context.mycart.length}
-              </span>
+          {/* Cart Section */}
+          <div className="flex items-center">
+            <Link to='/mycart' className="group relative flex items-center gap-3 bg-stone-50 px-4 py-2 rounded-full hover:bg-orange-50 transition-all border border-stone-100">
+              <div className="relative">
+                <FaShoppingCart size={20} className="text-[#4B2E2B] group-hover:text-orange-600 transition-colors" />
+                <span className="absolute -top-3 -right-3 bg-orange-600 text-white rounded-full h-5 w-5 flex items-center justify-center text-[10px] font-bold shadow-lg ring-2 ring-white">
+                  {this.context.mycart.length}
+                </span>
+              </div>
+              <span className="text-sm font-bold text-[#4B2E2B] hidden md:block">Giỏ hàng</span>
             </Link>
-          </div>  
+          </div>   
         </div>
-        <div className="bg-[#f2f2f2] h-[47px] mt-6">
-          <div className="container-80 flex uppercase gap-5 text-[#404040] text-sm">
-            <Category categories={categories} />
-            {/* Other elements */}
-            <Link to='/products' className='hover:text-primary transition-all duration-300 mt-[14px] font-medium font-sans'>Tất cả sản phẩm</Link>
-            <Link to='/introduction' className='hover:text-primary transition-all duration-300 mt-[14px] font-medium font-sans'>GIỚI THIỆU</Link>
-            <Link to='/contact' className='hover:text-primary transition-all duration-300 mt-[14px] font-medium font-sans'>LIÊN HỆ</Link>
+
+        {/* Lower Menu: Navigation & Categories */}
+        <div className="border-t border-stone-100 shadow-sm overflow-x-auto">
+          <div className="container-80 flex items-center h-14 space-x-8 whitespace-nowrap">
+            <div className="border-r border-stone-200 pr-4 h-full flex items-center">
+               <Category categories={categories} />
+            </div>
+            
+            <nav className="flex items-center space-x-8 text-[13px] font-bold text-stone-600 tracking-widest">
+              <NavLink to='/home' className={({isActive}) => `hover:text-orange-600 transition-all uppercase ${isActive ? 'text-orange-600' : ''}`}>Trang chủ</NavLink>
+              <NavLink to='/products' className={({isActive}) => `hover:text-orange-600 transition-all uppercase ${isActive ? 'text-orange-600' : ''}`}>Sản phẩm</NavLink>
+              <NavLink to='/introduction' className={({isActive}) => `hover:text-orange-600 transition-all uppercase ${isActive ? 'text-orange-600' : ''}`}>Giới thiệu</NavLink>
+              <NavLink to='/contact' className={({isActive}) => `hover:text-orange-600 transition-all uppercase ${isActive ? 'text-orange-600' : ''}`}>Liên hệ</NavLink>
+            </nav>
+
+            <div className="flex-grow text-right hidden lg:block">
+              <span className="text-[11px] italic text-stone-400 tracking-tighter">"Cà phê sạch cho ngày mới năng động"</span>
+            </div>
           </div>
         </div>
       </div>

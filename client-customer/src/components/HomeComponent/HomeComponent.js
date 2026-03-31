@@ -29,74 +29,93 @@ const Home = () => {
 
   const apiGetNewProducts = () => {
     axios.get('/api/customer/products/new').then((res) => {
-      const result = res.data;
-      setNewProds(result);
+      setNewProds(res.data);
     });
   };
 
   const apiGetHotProducts = () => {
     axios.get('/api/customer/products/hot').then((res) => {
-      const result = res.data;
-      setHotProds(result);
+      setHotProds(res.data);
     });
   };
 
   const apiGetProductsByCategory = (categoryId) => {
     axios.get(`/api/customer/products/category/${categoryId}`).then((res) => {
-      const result = res.data;
       setCategoryProducts(prevState => ({
         ...prevState,
-        [categoryId]: result
+        [categoryId]: res.data
       }));
     });
   };
 
-  const renderCategoryProducts = (categoryId, categoryName) => {
-    const products = categoryProducts[categoryId] || [];
-    if (products.length === 0) return null;
-    return (
-      <div key={categoryId} className="container-80 pt-16">
-        <div className="border-b border-[ddd] pb-1 flex items-center justify-between">
-          <h2 className='font-semibold text-xl text-primary uppercase'>{categoryName}</h2>
-          <Link to={'/product/category/' + categoryId} className='text-sm font-semibold text-primary'>Xem thêm</Link>
-        </div>
-        <ProductSlider products={products} />
+  const SectionHeader = ({ title, subTitle, link }) => (
+    <div className="flex items-center justify-between border-b-2 border-stone-200 pb-2 mb-6">
+      <div>
+        <h2 className='font-bold text-2xl text-[#442c1e] uppercase tracking-tight'>{title}</h2>
+        <p className='text-xs text-[#8c7851] font-medium uppercase tracking-widest'>{subTitle}</p>
       </div>
-    );
-  };
+      {link && (
+        <Link to={link} className='text-sm font-bold text-[#92400e] hover:underline transition-all'>
+          XEM TẤT CẢ
+        </Link>
+      )}
+    </div>
+  );
 
   return (
-    <div>
-      <div className="container-80 pt-2">
-        <div className="ml-[275px]">
-          <CarouselComponent />
-        </div>
-        <div className="py-6">
-          <ImageComponent />
+    <div className="bg-[#fffcf9] min-h-screen pb-20">
+      {/* SECTION BANNER: Đã bỏ ml-[275px] để hình tràn hết độ dài khung */}
+      <div className="w-full">
+        <div className="container-80 pt-4">
+          <div className="full-drop-banner overflow-hidden rounded-xl shadow-md">
+            <CarouselComponent />
+          </div>
+          
+          <div className="py-10 full-drop-image">
+            <ImageComponent />
+          </div>
         </div>
       </div>
-      <div className="container-80 pt-4">
-        <div id='newBook'>
-          <div className="border-b border-[ddd] pb-1 flex items-center justify-between">
-            <h2 className='font-semibold text-xl text-primary uppercase'>SÁCH MỚI</h2>
-            <p className='text-sm font-semibold text-primary'>Sách mới - Nhiều khuyến mãi</p>
+
+      <div className="container-80">
+        {/* NEW PRODUCTS */}
+        <div id='newCoffee' className="pt-4">
+          <SectionHeader title="Hương vị mới" subTitle="Coffee mới - Nhiều khuyến mãi" />
+          <div className="product-slider-wrapper">
+            <ProductSlider products={newProds} />
           </div>
-          <ProductSlider products={newProds} />
         </div>
-        {hotProds.length > 0 ? (
-          <div className="container-80 pt-4">
-            <div className="border-b border-[ddd] flex items-center pb-1 justify-between">
-              <h2 className="text-center uppercase">NỔI BẬT</h2>
-              <p className='text-sm font-semibold text-primary'>Sách HOT - Giảm Sốc</p>
+
+        {/* HOT PRODUCTS */}
+        {hotProds.length > 0 && (
+          <div className="pt-16">
+            <div className="bg-[#2d1b0f] p-6 md:p-10 rounded-[2.5rem] shadow-2xl border border-stone-800">
+               <div className="flex items-center justify-between border-b border-stone-700 pb-4 mb-8">
+                <h2 className="text-stone-100 font-bold text-2xl uppercase tracking-wide">Sản phẩm nổi bật</h2>
+                <p className='text-sm font-semibold text-orange-500 italic'>HOT SELLER</p>
+              </div>
+              <ProductSlider products={hotProds} />
             </div>
-            <ProductSlider products={hotProds} />
           </div>
-        ) : (
-          <div />
         )}
-        {categories.map(category =>
-          renderCategoryProducts(category._id, category.name)
-        )}
+
+        {/* DYNAMIC CATEGORIES */}
+        <div className="mt-12 space-y-16">
+          {categories.map(category => {
+             const products = categoryProducts[category._id] || [];
+             if (products.length === 0) return null;
+             return (
+               <div key={category._id} className="pt-4">
+                 <SectionHeader 
+                    title={category.name} 
+                    subTitle="Thực đơn quán" 
+                    link={'/product/category/' + category._id} 
+                  />
+                 <ProductSlider products={products} />
+               </div>
+             );
+          })}
+        </div>
       </div>
     </div>
   );

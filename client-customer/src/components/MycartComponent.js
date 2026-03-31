@@ -3,89 +3,129 @@ import MyContext from '../contexts/MyContext';
 import CartUtil from '../utils/CartUtil';
 import axios from 'axios';
 import withRouter from '../utils/withRouter';
-import { MdLocalOffer } from 'react-icons/md';
+import { MdLocalOffer, MdDeleteSweep } from 'react-icons/md';
+import { HiOutlineArrowNarrowLeft } from 'react-icons/hi';
 import Swal from 'sweetalert2';
 import { Link } from 'react-router-dom';
 
 class Mycart extends Component {
-  static contextType = MyContext; // using this.context to access global state
+  static contextType = MyContext;
 
   render() {
-    const mycart = this.context.mycart.map((item, index) => {
+    const mycart = this.context.mycart.map((item) => {
       return (
-        <tr className="border-b py-2" key={item.product._id}>
-          <td className="text-start">
+        <tr className="border-b border-stone-100 group transition-colors hover:bg-stone-50/50" key={item.product._id}>
+          <td className="py-6 flex items-center">
             <button 
               onClick={() => this.lnkRemoveClick(item.product._id)}
-              className="text-[#d0d0d0] w-7 h-7 rounded-full border-2 mr-2 border-[#d0d0d0] hover:text-[#a9a8a8] hover:border-[#a9a8a8] transition-all duration-300">
-              X
+              className="text-stone-300 hover:text-red-500 transition-colors mr-4"
+              title="Xóa sản phẩm"
+            >
+              <MdDeleteSweep size={22} />
             </button>
-            <img 
-              src={"data:image/jpg;base64," + item.product.image}
-              alt="image"
-              className="w-20 h-20 object-cover inline-block" 
-            />
-            <h2 className="ml-4 inline-block font-normal text-sm">{item.product.name}</h2>
+            <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-sm border border-stone-200 bg-white">
+                <img 
+                  src={"data:image/jpg;base64," + item.product.image}
+                  alt={item.product.name}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                />
+            </div>
+            <div className="ml-4">
+                <h2 className="font-bold text-[#2d1b0f] text-base">{item.product.name}</h2>
+                <p className="text-xs text-stone-400 italic">Next Coffee Selection</p>
+            </div>
           </td>
-          <td className="text-start">{item.product.price.toLocaleString()} ₫</td>
-          <td className="text-center">{item.quantity}</td>
-          <td className="text-right font-bold">{(item.product.price * item.quantity).toLocaleString()} ₫</td>
+          <td className="text-stone-600 font-medium">{item.product.price.toLocaleString()} ₫</td>
+          <td className="text-center font-semibold text-[#2d1b0f]">{item.quantity}</td>
+          <td className="text-right font-bold text-orange-700">{(item.product.price * item.quantity).toLocaleString()} ₫</td>
         </tr>
       );
     });
 
     return (
-      <div className="container-80">
-        <div className="flex">
-          <div className="md:col-span-3 pr-6 w-[66.6%]">
-            <table className="w-full text-[#353535] text-sm uppercase font-bold">
+      <div className="container-80 py-12">
+        <div className="flex flex-col lg:flex-row gap-10">
+          {/* BẢNG SẢN PHẨM */}
+          <div className="flex-[2]">
+            <h1 className="text-2xl font-serif font-bold text-[#2d1b0f] mb-8 flex items-center gap-3">
+                Giỏ hàng của bạn <span className="text-sm font-sans font-normal text-stone-400">({this.context.mycart.length} món)</span>
+            </h1>
+            
+            <table className="w-full text-sm">
               <thead>
-                <tr className="border-b-[3px]">
-                  <th className="pb-2 text-start"><p>SẢN PHẨM</p></th>
-                  <th className="pb-2 text-start">GIÁ</th>
-                  <th className="pb-2">SỐ LƯỢNG</th>
-                  <th className="pb-2 text-end"><p>TỔNG</p></th>
+                <tr className="border-b-2 border-[#2d1b0f] text-stone-400 uppercase tracking-widest text-[11px] font-bold">
+                  <th className="pb-4 text-start">Sản phẩm</th>
+                  <th className="pb-4 text-start">Giá</th>
+                  <th className="pb-4">Số lượng</th>
+                  <th className="pb-4 text-end">Tổng cộng</th>
                 </tr>
               </thead>
               <tbody>
-                {mycart}
+                {this.context.mycart.length > 0 ? mycart : (
+                    <tr>
+                        <td colSpan="4" className="py-20 text-center text-stone-400 italic">
+                            Giỏ hàng của bạn đang trống...
+                        </td>
+                    </tr>
+                )}
               </tbody>
             </table>
-            <div className="flex justify-start gap-6 mt-6">
-              <Link to='/' className="px-4 py-2 border-[1.6px] border-primary text-primary font-medium text-sm">
-                <span className='mr-3'>←</span> TIẾP TỤC XEM SẢN PHẨM
+
+            <div className="mt-10">
+              <Link to='/products' className="inline-flex items-center gap-2 px-6 py-3 rounded-full border-2 border-stone-200 text-stone-600 font-bold text-sm hover:bg-stone-100 hover:border-stone-300 transition-all">
+                <HiOutlineArrowNarrowLeft size={20}/> TIẾP TỤC THƯỞNG THỨC
               </Link>
             </div>
           </div>
 
-          {/* CART SUMMARY */}
-          <div className="border-l pl-6 w-1/3">
-            <h2 className="text-sm font-bold pb-[9px] uppercase text-[#353535] border-b-[3px]">Tổng Số Lượng</h2>
-            <div className="my-4">
-              <div className="flex justify-between mb-2 border-b pb-2">
-                <span className='text-[.9em] normal-case tracking-normal text-[#353535]'>Tổng phụ</span>
-                <span className="font-bold text-[.9em] text-[#111]">{CartUtil.getTotal(this.context.mycart).toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between mb-2">
-                <span className='text-[.9em] normal-case tracking-normal text-[#353535]'>Giao hàng</span>
-                <div className="text-right">
-                  <span className='text-[13px] normal-case tracking-wide text-[#666666]'>Giao hàng miễn phí</span>
-                  <p className='text-[13px] normal-case tracking-wide text-[#666666] py-2'>Ước tính cho <strong className='font-bold text-[#666666]'>Việt Nam</strong>.</p>
-                  <a href="#" className="text-[13px] normal-case tracking-wide text-[#666666]">Đổi địa chỉ</a>
+          {/* TỔNG KẾT ĐƠN HÀNG */}
+          <div className="flex-1">
+            <div className="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-stone-200/50 border border-stone-100 sticky top-28">
+                <h2 className="text-xl font-serif font-bold text-[#2d1b0f] mb-6 pb-4 border-b border-stone-100">Tóm tắt đơn hàng</h2>
+                
+                <div className="space-y-4">
+                    <div className="flex justify-between text-stone-500">
+                        <span>Tổng tiền hàng</span>
+                        <span className="font-semibold text-stone-800">{CartUtil.getTotal(this.context.mycart).toLocaleString()} ₫</span>
+                    </div>
+                    
+                    <div className="flex justify-between text-stone-500">
+                        <span>Phí vận chuyển</span>
+                        <span className="text-green-600 font-medium uppercase text-xs">Miễn phí</span>
+                    </div>
+
+                    <div className="bg-orange-50 p-4 rounded-2xl border border-orange-100 my-6">
+                        <div className="flex items-center gap-2 mb-3 text-orange-800 font-bold text-sm">
+                            <MdLocalOffer className="rotate-90" />
+                            Mã ưu đãi (Coupon)
+                        </div>
+                        <div className="flex gap-2">
+                            <input 
+                                type="text" 
+                                className="flex-1 bg-white border border-orange-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300" 
+                                placeholder="Nhập mã..." 
+                            />
+                            <button className="bg-orange-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-orange-700 transition-colors">ÁP DỤNG</button>
+                        </div>
+                    </div>
+
+                    <div className="pt-4 border-t border-stone-100 flex justify-between items-end">
+                        <span className="text-[#2d1b0f] font-bold">Tổng thanh toán</span>
+                        <div className="text-right">
+                            <p className="text-2xl font-bold text-orange-700 leading-none">
+                                {CartUtil.getTotal(this.context.mycart).toLocaleString()} ₫
+                            </p>
+                            <p className="text-[10px] text-stone-400 mt-1 uppercase tracking-tighter">Đã bao gồm VAT</p>
+                        </div>
+                    </div>
+
+                    <button 
+                        onClick={() => this.lnkCheckoutClick()} 
+                        className="w-full mt-8 bg-[#2d1b0f] text-white py-4 rounded-full font-bold text-base hover:bg-[#442c1e] shadow-lg shadow-stone-300 transition-all active:scale-95"
+                    >
+                        TIẾN HÀNH ĐẶT HÀNG
+                    </button>
                 </div>
-              </div>
-              <div className="flex justify-between border-t pt-2">
-                <span className='text-[.9em] normal-case tracking-normal text-[#353535]'>Tổng</span>
-                <span className="font-bold text-[.9em] text-[#111]">{CartUtil.getTotal(this.context.mycart).toLocaleString()} ₫</span>  
-              </div>
-            </div>
-            <button onClick={() => this.lnkCheckoutClick()} className="w-full uppercase py-2 bg-primary text-white font-bold rounded-sm text-[15.52px] mb-4">Đặt hàng</button>
-            <div>
-              <h3 className="text-lg font-bold mb-2 flex gap-3 items-center border-b-[3px] border-[#ececec] text-[.95em] pb-2"> <MdLocalOffer className="text-[#b5b5b5] text-[18px] inline ml-2 rotate-90" title="Coupon" />Phiếu ưu đãi</h3>
-              <div className="pt-2">
-                <input type="text" className="box-border border border-[#ddd] px-3 h-[2.507em] text-[.97em] rounded-none max-w-full w-full align-middle bg-white text-[#333] shadow-inner transition-all transition-border transition-background duration-300" placeholder="Mã ưu đãi" />
-                <button className="mt-4 box-border border border-[#ddd] px-3 h-[2.507em] text-[.97em] rounded-none max-w-full w-full align-middle bg-[#f9f9f9] hover:bg-[#dedede] text-[#6a6a6a] shadow-inner transition-all transition-border transition-background duration-300">Áp dụng</button>
-              </div>
             </div>
           </div>
         </div>
@@ -96,9 +136,9 @@ class Mycart extends Component {
   lnkRemoveClick(id) {
     const mycart = this.context.mycart;
     const index = mycart.findIndex(x => x.product._id === id);
-    if (index !== -1) { // found, remove item
+    if (index !== -1) {
       mycart.splice(index, 1);
-      this.context.setMycart(mycart);
+      this.context.setMycart([...mycart]); // Tạo reference mới để React trigger re-render
     }
   }
 
@@ -109,13 +149,14 @@ class Mycart extends Component {
       const customer = this.context.customer;
       if (customer) {
         Swal.fire({
-          title: 'Bạn có chắc?',
-          text: "Mua các sản phẩm này không?",
-          icon: 'warning',
+          title: 'Xác nhận đơn hàng',
+          text: "Bạn đã sẵn sàng để Next Coffee chuẩn bị thức uống?",
+          icon: 'question',
           showCancelButton: true,
-          confirmButtonColor: '#3085d6',
+          confirmButtonColor: '#2d1b0f',
           cancelButtonColor: '#d33',
-          confirmButtonText: 'Có!'
+          confirmButtonText: 'Đặt hàng ngay!',
+          cancelButtonText: 'Kiểm tra lại'
         }).then((result) => {
           if (result.isConfirmed) {
             this.apiCheckout(total, items, customer);
@@ -125,7 +166,7 @@ class Mycart extends Component {
         this.props.navigate('/login');
       }
     } else {
-      Swal.fire('Error', 'Bạn chưa có sản phẩm nào trong giỏ hàng.', 'error');
+      Swal.fire('Giỏ hàng trống', 'Hãy chọn cho mình một ly cà phê trước nhé!', 'info');
     }
   }
 
@@ -133,19 +174,16 @@ class Mycart extends Component {
     const body = { total: total, items: items, customer: customer };
     const config = { headers: { 'x-access-token': this.context.token } };
     axios.post('/api/customer/checkout', body, config).then((res) => {
-      const result = res.data;
-      if (result) {
+      if (res.data) {
         this.context.setMycart([]);
         Swal.fire({
-          position: "center",
           icon: "success",
-          title: "Đơn hàng đã được đặt thành công.",
+          title: "Đã nhận đơn hàng!",
+          text: "Barista của Next Coffee đang bắt đầu pha chế cho bạn.",
           showConfirmButton: false,
-          timer: 1500
+          timer: 2000
         });
         this.props.navigate('/home');
-      } else {
-        Swal.fire('Error', 'Có lỗi xảy ra khi đặt hàng', 'error');
       }
     });
   }
