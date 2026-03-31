@@ -16,12 +16,15 @@ const CategoryDetail = ({ item, updateCategories }) => {
     }
   }, [item]);
 
+  // Cập nhật màu sắc cho SweetAlert2 để đồng bộ tone nâu
   const showAlert = (title, text, icon) => {
     Swal.fire({
       title,
       text,
       icon,
-      confirmButtonColor: '#1D4ED8',
+      confirmButtonColor: '#8d6e63', // Màu nâu trung tính
+      background: '#fff',
+      color: '#3e2723'
     });
   };
 
@@ -93,8 +96,8 @@ const CategoryDetail = ({ item, updateCategories }) => {
       text: 'This action cannot be undone!',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#EF4444',
-      cancelButtonColor: '#3B82F6',
+      confirmButtonColor: '#c62828', // Màu đỏ sậm cho nút xóa
+      cancelButtonColor: '#a1887f',
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed && txtID) {
@@ -118,54 +121,62 @@ const CategoryDetail = ({ item, updateCategories }) => {
   };
 
   return (
-    <div className="w-full  h-96 bg-white text-gray-700 p-8 rounded-lg shadow-lg border border-gray-200">
-      <h2 className="text-3xl font-semibold text-center mb-8 text-gray-700">Category Detail</h2>
+    <div className="w-full bg-white text-[#3e2723] p-8 rounded-2xl shadow-sm border border-[#efebe9]">
+      <div className="flex items-center justify-center gap-3 mb-8">
+        <div className="h-px bg-[#efebe9] flex-grow"></div>
+        <h2 className="text-2xl font-bold text-[#5d4037] uppercase tracking-wider">Detail</h2>
+        <div className="h-px bg-[#efebe9] flex-grow"></div>
+      </div>
+
       <form className="space-y-6">
         <div className="flex flex-col">
-          <label htmlFor="category-id" className="text-gray-500">ID</label>
+          <label htmlFor="category-id" className="text-xs font-bold uppercase text-[#a1887f] mb-1 ml-1">Category ID</label>
           <input
             id="category-id"
             type="text"
             disabled
             value={txtID}
-            className="bg-gray-100 border border-gray-300 text-gray-500 p-2 rounded-md cursor-not-allowed"
+            className="bg-[#fafafa] border border-[#efebe9] text-[#a1887f] p-3 rounded-xl cursor-not-allowed font-mono text-sm shadow-inner"
           />
         </div>
+
         <div className="flex flex-col">
-          <label htmlFor="category-name" className="text-gray-500">Name</label>
+          <label htmlFor="category-name" className="text-xs font-bold uppercase text-[#a1887f] mb-1 ml-1">Category Name</label>
           <input
             id="category-name"
             type="text"
+            placeholder="Enter category name..."
             value={txtName}
             onChange={(e) => setTxtName(e.target.value)}
-            className="bg-white text-gray-700 border border-gray-300 p-2 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            className="bg-white text-[#3e2723] border border-[#d7ccc8] p-3 rounded-xl focus:ring-2 focus:ring-[#8d6e63] focus:border-transparent focus:outline-none transition-all duration-200 placeholder-[#d7ccc8]"
           />
         </div>
-        <div className="flex justify-end space-x-4 flex-wrap">
+
+        <div className="grid grid-cols-2 gap-3 pt-4">
           <button
-            className="bg-[#21499a] hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-all duration-300 mt-2"
+            className="bg-[#5d4037] hover:bg-[#3e2723] text-white font-bold py-3 rounded-xl transition-all duration-300 shadow-md active:scale-95"
             onClick={btnAddClick}
           >
-            Add New
+            ADD NEW
           </button>
           <button
-            className="bg-[#3a8897] hover:bg-green-600 text-white px-4 py-2 rounded-md transition-all duration-300 mt-2"
+            className="bg-[#8d6e63] hover:bg-[#6d4c41] text-white font-bold py-3 rounded-xl transition-all duration-300 shadow-md active:scale-95 disabled:opacity-50"
             onClick={btnUpdateClick}
+            disabled={!txtID}
           >
-            Update
+            UPDATE
           </button>
           <button
-            className="bg-[#ce7539] hover:bg-red-600 text-white px-4 py-2 rounded-md transition-all duration-300 mt-2"
-            onClick={btnDeleteClick}
-          >
-            Delete
-          </button>
-          <button
-            type="button"
-            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition-all duration-300 mt-2"
+            className="bg-[#d7ccc8] hover:bg-[#bcaaa4] text-[#5d4037] font-bold py-3 rounded-xl transition-all duration-300 active:scale-95"
             onClick={clearInputs}
           >
-            Clear
+            CLEAR
+          </button>
+          <button
+            className="border-2 border-[#ff8a65] text-[#c62828] hover:bg-[#ff8a65] hover:text-white font-bold py-3 rounded-xl transition-all duration-300 active:scale-95"
+            onClick={btnDeleteClick}
+          >
+            DELETE
           </button>
         </div>
       </form>

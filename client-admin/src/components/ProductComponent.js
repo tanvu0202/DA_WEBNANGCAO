@@ -33,15 +33,14 @@ const Product = () => {
     setItemSelected(item);
   };
 
-  // This function will be passed to ProductDetail as onSuccess
   const handleSuccess = () => {
-    apiGetProducts(curPage); // Refresh the product list
-    setItemSelected(null); // Reset selection
+    apiGetProducts(curPage);
+    setItemSelected(null);
     Swal.fire({
       title: 'Success',
       text: 'Operation completed successfully!',
       icon: 'success',
-      confirmButtonText: 'OK',
+      confirmButtonColor: '#8d6e63',
     });
   };
 
@@ -52,8 +51,8 @@ const Product = () => {
       text: 'This action cannot be undone!',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#EF4444',
-      cancelButtonColor: '#3B82F6',
+      confirmButtonColor: '#c62828',
+      cancelButtonColor: '#a1887f',
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
@@ -65,69 +64,96 @@ const Product = () => {
   };
 
   return (
-    <div className="container mx-auto p-6 bg-white">
-      <h2 className="text-2xl font-semibold text-center mb-6 text-gray-700">Product List</h2>
-      <div className="flex-col">
-        {/* Product List */}
-        <div className="w-full pr-4">
-          <table className="min-w-full table-auto bg-white shadow-md rounded-md overflow-hidden">
-            <thead className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-              <tr>
-                <th className="py-3 px-6 text-left">ID</th>
-                <th className="py-3 px-6 text-left">Name</th>
-                <th className="py-3 px-6 text-left">Price</th>
-                <th className="py-3 px-6 text-left">Creation Date</th>
-                <th className="py-3 px-6 text-left">Category</th>
-                <th className="py-3 px-6 text-left">Image</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-600 text-sm">
-              {products.map((item) => (
-                <tr
-                  key={item._id}
-                  className="border-b border-gray-200 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => handleItemClick(item)}
-                >
-                  <td className="py-3 px-6">{item._id}</td>
-                  <td className="py-3 px-6">{item.name}</td>
-                  <td className="py-3 px-6">{item.price.toLocaleString()} VND</td>
-                  <td className="py-3 px-6">{new Date(item.cdate).toLocaleDateString()}</td>
-                  <td className="py-3 px-6">{item.category.name}</td>
-                  <td className="py-3 px-6">
-                    <img
-                      src={`data:image/jpg;base64,${item.image}`}
-                      alt={item.name}
-                      className="w-16 h-16 object-cover rounded-md"
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <div className="container mx-auto p-6 bg-[#fafafa] min-h-screen">
+      <h2 className="text-3xl font-bold mb-8 text-[#3e2723] flex items-center justify-center gap-3">
+        <span className="h-1 w-12 bg-[#8d6e63] rounded-full"></span>
+        PRODUCT MANAGEMENT
+        <span className="h-1 w-12 bg-[#8d6e63] rounded-full"></span>
+      </h2>
 
-          <div className="mt-4 flex justify-center">
-            {Array.from({ length: noPages }, (_, index) => (
-              <button
-                key={index}
-                onClick={() => handlePageClick(index + 1)}
-                className={`mx-1 px-4 py-2 rounded-md ${
-                  curPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
-                }`}
-              >
-                {index + 1}
-              </button>
-            ))}
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Left Side: Product List Table */}
+        <div className="lg:w-2/3 flex flex-col">
+          <div className="bg-white rounded-2xl shadow-sm border border-[#efebe9] overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead className="bg-[#5d4037] text-[#d7ccc8]">
+                  <tr>
+                    <th className="py-4 px-4 font-semibold uppercase text-xs tracking-wider">Product</th>
+                    <th className="py-4 px-4 font-semibold uppercase text-xs tracking-wider text-center">Price</th>
+                    <th className="py-4 px-4 font-semibold uppercase text-xs tracking-wider text-center">Category</th>
+                    <th className="py-4 px-4 font-semibold uppercase text-xs tracking-wider text-center">Info</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#efebe9] text-[#5d4037]">
+                  {products.map((item) => (
+                    <tr
+                      key={item._id}
+                      className={`hover:bg-[#fdfaf9] cursor-pointer transition-colors duration-150 ${
+                        itemSelected?._id === item._id ? "bg-[#efebe9] border-l-4 border-[#8d6e63]" : ""
+                      }`}
+                      onClick={() => handleItemClick(item)}
+                    >
+                      <td className="py-4 px-4">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={`data:image/jpg;base64,${item.image}`}
+                            alt={item.name}
+                            className="w-12 h-12 object-cover rounded-xl shadow-sm border border-[#efebe9]"
+                          />
+                          <div>
+                            <p className="font-bold text-sm leading-tight mb-1">{item.name}</p>
+                            <p className="text-[10px] font-mono text-[#a1887f] uppercase">{item._id.substring(0, 10)}...</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-4 px-4 text-center">
+                        <span className="font-semibold text-sm text-[#8d6e63]">{item.price.toLocaleString()}</span>
+                        <span className="text-[10px] ml-1 text-[#a1887f]">VND</span>
+                      </td>
+                      <td className="py-4 px-4 text-center">
+                        <span className="inline-block px-3 py-1 rounded-full bg-[#efebe9] text-[#5d4037] text-[11px] font-bold">
+                          {item.category.name}
+                        </span>
+                      </td>
+                      <td className="py-4 px-4 text-center">
+                         <p className="text-[11px] text-[#a1887f]">{new Date(item.cdate).toLocaleDateString()}</p>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination */}
+            <div className="p-4 bg-[#fcfaf9] border-t border-[#efebe9] flex justify-center items-center gap-2">
+              {Array.from({ length: noPages }, (_, index) => (
+                <button
+                  key={index}
+                  onClick={() => handlePageClick(index + 1)}
+                  className={`min-w-[40px] h-10 rounded-xl font-bold transition-all duration-300 shadow-sm ${
+                    curPage === index + 1
+                      ? 'bg-[#5d4037] text-white scale-110'
+                      : 'bg-white text-[#8d6e63] border border-[#d7ccc8] hover:bg-[#efebe9]'
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Product Detail */}
-        <div className="w-full pl-4">
-          <ProductDetail
-            item={itemSelected}
-            curPage={curPage}
-            onSuccess={handleSuccess} 
-            onDelete={handleDelete}  
-          />
+        {/* Right Side: Detail Component */}
+        <div className="lg:w-1/3 animate__animated animate__fadeInRight">
+          <div className="sticky top-6">
+            <ProductDetail
+              item={itemSelected}
+              curPage={curPage}
+              onSuccess={handleSuccess} 
+              onDelete={handleDelete}  
+            />
+          </div>
         </div>
       </div>
     </div>
