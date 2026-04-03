@@ -23,25 +23,28 @@ import ContactComponent from './ContactComponent/ContactComponent';
 import AllProduct from './AllProduct';
 
 class Main extends Component {
+  // MainComponent.js
   render() {
     return (
-      /* body-customer: Đổi font chữ sang phong cách hiện đại và màu nền kem sữa cho toàn trang */
-      <div className="body-customer font-sans bg-[#fffcf9] min-h-screen flex flex-col selection:bg-orange-200 selection:text-orange-900">
-        
-        {/* Thanh thông báo & Hotline (Đã sửa ở bước trước) */}
+      <div className="min-h-screen flex pt-[120px]">
+        {/* 1. Thanh thông báo (Inform) đã được sửa fixed ở trên */}
         <Inform />
-        
-        {/* Thanh điều hướng chính - Header */}
-        <header className="sticky top-0 z-[100] bg-white/80 backdrop-blur-md border-b border-stone-100 shadow-sm">
+
+        {/* 2. Menu Header (Sticky hoặc Fixed) */}
+        <header className="fixed top-[40px] left-0 right-0 z-[100] h-20 bg-white shadow-sm flex items-center">
           <Menu />
         </header>
 
-        {/* Khu vực nội dung chính */}
-        <main className="flex-grow">
-          {/* Tự động cuộn lên đầu khi chuyển trang */}
-          <ScrollToTop />
+        {/* 3. Khối nội dung chính */}
+        <div> {/* 40px Inform + 80px Header = 120px */}
           
-          <div className="animate__animated animate__fadeIn">
+          {/* Sidebar Nav dọc bên trái */}
+          <aside className="fixed left-0 top-[120px] bottom-0 w-64 bg-white border-r z-[90] hidden md:block">
+            {/* Categories list */}
+          </aside>
+
+          {/* Toàn bộ nội dung trang bên phải Sidebar */}
+          <main className="flex-grow md:ml-64 p-6">
             <Routes>
               <Route path='/' element={<Navigate replace to='/home' />} />
               <Route path='/home' element={<Home />} />
@@ -58,19 +61,11 @@ class Main extends Component {
               <Route path='/mycart' element={<Mycart />} />
               <Route path='/myorders' element={<Myorders />} />
             </Routes>
-          </div>
-        </main>
-
-        {/* Chân trang */}
-        <footer className="mt-auto border-t border-stone-200 bg-[#2d1b0f] text-white">
-          <FooterComponent />
-        </footer>
-
-        {/* Chat Widget */}
-        <TawkMessenger />
+            <FooterComponent />
+          </main>
+        </div>
       </div>
     );
   }
 }
-
 export default Main;

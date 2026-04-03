@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import MyContext from '../contexts/MyContext';
 import withRouter from '../utils/withRouter';
 import Swal from 'sweetalert2';
+import { FaUnlockAlt } from 'react-icons/fa'; // Thêm icon cho sinh động
 
 class Login extends Component {
   static contextType = MyContext;
@@ -18,6 +19,7 @@ class Login extends Component {
     };
   }
 
+  // ... Các hàm validate giữ nguyên ...
   validateEmail = (email) => email.length > 0;
   validatePassword = (password) => password.length > 0;
 
@@ -70,11 +72,20 @@ class Login extends Component {
           iconColor: '#442c1e'
         });
       } else {
+        // CẬP NHẬT: Thêm nút chuyển tới trang Active trong thông báo lỗi
         Swal.fire({
           icon: 'error',
           title: 'Đăng nhập thất bại',
-          text: result.message,
-          confirmButtonColor: '#442c1e'
+          text: result.message || 'Thông tin tài khoản không chính xác.',
+          showCancelButton: true,
+          confirmButtonText: 'Thử lại',
+          cancelButtonText: 'Kích hoạt tài khoản',
+          confirmButtonColor: '#442c1e',
+          cancelButtonColor: '#f59e0b', // Màu cam cho nút Active
+        }).then((res) => {
+          if (res.isDismissed && res.dismiss === Swal.DismissReason.cancel) {
+            this.props.navigate('/active');
+          }
         });
       }
     });
@@ -89,10 +100,10 @@ class Login extends Component {
           
           {/* Header */}
           <div className="text-center">
-            <h2 className="text-3xl font-serif font-bold text-[#442c1e] tracking-tight">
-              ĐĂNG NHẬP
+            <h2 className="text-3xl font-serif font-bold text-[#442c1e] tracking-tight text-center uppercase">
+              Đăng Nhập
             </h2>
-            <p className="mt-2 text-sm text-stone-500 italic">
+            <p className="mt-2 text-sm text-stone-500 italic text-center">
               Hương vị cà phê đang chờ đợi bạn
             </p>
             <div className="w-12 h-1 bg-orange-400 mx-auto mt-4 rounded-full"></div>
@@ -100,9 +111,8 @@ class Login extends Component {
 
           <form className="mt-8 space-y-6" onSubmit={this.handleSubmit}>
             <div className="space-y-4">
-              {/* Username Field */}
               <div>
-                <label htmlFor="email" className="block text-xs font-bold uppercase tracking-widest text-[#442c1e] mb-2 ml-1">
+                <label htmlFor="email" className="block text-xs font-bold uppercase tracking-widest text-[#442c1e] mb-2 ml-1 text-left">
                   Tài khoản hoặc Email
                 </label>
                 <input
@@ -115,12 +125,11 @@ class Login extends Component {
                   value={txtUsername}
                   onChange={this.handleEmailChange}
                 />
-                {emailError && <p className="mt-1 text-xs text-red-500 ml-2 italic">{emailError}</p>}
+                {emailError && <p className="mt-1 text-xs text-red-500 ml-2 italic text-left">{emailError}</p>}
               </div>
 
-              {/* Password Field */}
               <div>
-                <label htmlFor="password" className="block text-xs font-bold uppercase tracking-widest text-[#442c1e] mb-2 ml-1">
+                <label htmlFor="password" className="block text-xs font-bold uppercase tracking-widest text-[#442c1e] mb-2 ml-1 text-left">
                   Mật khẩu
                 </label>
                 <input
@@ -133,7 +142,7 @@ class Login extends Component {
                   value={txtPassword}
                   onChange={this.handlePasswordChange}
                 />
-                {passwordError && <p className="mt-1 text-xs text-red-500 ml-2 italic">{passwordError}</p>}
+                {passwordError && <p className="mt-1 text-xs text-red-500 ml-2 italic text-left">{passwordError}</p>}
               </div>
             </div>
 
@@ -171,13 +180,24 @@ class Login extends Component {
             </div>
           </form>
 
-          <div className="text-center pt-4">
+          {/* PHẦN THÊM MỚI: Các nút chuyển hướng dưới cùng */}
+          <div className="text-center pt-6 space-y-4 border-t border-stone-50">
             <p className="text-sm text-stone-500">
               Chưa có tài khoản?{' '}
               <a href="/dang-ky" className="font-bold text-[#442c1e] hover:underline decoration-orange-400 decoration-2 underline-offset-4">
                 Đăng ký miễn phí
               </a>
             </p>
+            
+            <div className="flex items-center justify-center gap-2 text-xs text-stone-400 italic font-medium">
+              <span>Đã có mã xác thực?</span>
+              <button 
+                onClick={() => this.props.navigate('/active')}
+                className="text-orange-600 hover:text-orange-700 font-bold flex items-center gap-1 uppercase tracking-tighter transition-all"
+              >
+                Kích hoạt tài khoản <FaUnlockAlt size={10} />
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -36,3 +36,18 @@
     transform: rotate(360deg);
   }
 }
+
+/* Khi sidebar đóng, nội dung main sẽ tràn ra */
+.main-content {
+  transition: margin-left 0.3s ease-in-out;
+  margin-left: 0; /* Mặc định cho mobile */
+}
+
+@media (min-width: 768px) {
+  .main-content.sidebar-open {
+    margin-left: 256px; /* tương đương ml-64 */
+  }
+  .main-content.sidebar-closed {
+    margin-left: 0;
+  }
+}
