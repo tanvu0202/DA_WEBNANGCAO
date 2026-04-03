@@ -60,16 +60,33 @@ router.delete('/categories/:id', JwtUtil.checkToken, async function (req, res) {
 });
 
 // product
+// product
 router.get('/products', JwtUtil.checkToken, async function (req, res) {
-  const noProducts = await ProductDAO.selectByCount();
-  const sizePage = 4;
-  const noPages = Math.ceil(noProducts / sizePage);
-  var curPage = 1;
-  if (req.query.page) curPage = parseInt(req.query.page);
-  const skip = (curPage - 1) * sizePage;
-  const products = await ProductDAO.selectBySkipLimit(skip, sizePage);
-  const result = { products: products, noPages: noPages, curPage: curPage };
-  res.json(result);
+  try {
+    const categoryId = req.query.category;
+    const page = req.query.page ? parseInt(req.query.page) : 1;
+    const sizePage = req.query.size ? parseInt(req.query.size) : 6; // Nhận size 6
+
+    // Tạo query lọc theo cấu trúc Object của bác
+    let query = {};
+    if (categoryId && categoryId !== 'all' && categoryId !== '') {
+      query = { 'category._id': categoryId };
+    }
+
+    const noProducts = await ProductDAO.selectByCount(query);
+    const noPages = Math.ceil(noProducts / sizePage);
+    const skip = (page - 1) * sizePage;
+
+    const products = await ProductDAO.selectBySkipLimit(query, skip, sizePage);
+
+    res.json({ 
+      products: products, 
+      noPages: noPages, 
+      curPage: page 
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 });
 
 router.post('/products', JwtUtil.checkToken, async function (req, res) {
@@ -179,6 +196,36 @@ router.get('/orders/customer/:cid', JwtUtil.checkToken, async function (req, res
   const _cid = req.params.cid;
   const orders = await OrderDAO.selectByCustID(_cid);
   res.json(orders);
+});
+
+// Thống kê Analytics
+router.get('/analytics', JwtUtil.checkToken, async function (req, res) {
+  try {
+    // 1. Thống kê Người dùng
+    const totalCustomers = await CustomerDAO.selectByCount();
+
+    // 2. Thống kê Đơn hàng & Doanh thu
+    const allOrders = await OrderDAO.selectAll();
+    const approvedOrders = allOrders.filter(o => o.status === 'APPROVED');
+    const totalOrders = allOrders.length;
+    const totalRevenue = approvedOrders.reduce((sum, order) => sum + order.total, 0);
+
+    // 3. Thống kê Sản phẩm bán ra (Top 5)
+    // Tận dụng hàm selectTopHot đã có trong ProductDAO của bác
+    const topProducts = await ProductDAO.selectTopHot(5);
+
+    res.json({
+      customers: totalCustomers,
+      orders: {
+        total: totalOrders,
+        approved: approvedOrders.length,
+        revenue: totalRevenue
+      },
+      topProducts: topProducts
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 });
 
 module.exports = router;
