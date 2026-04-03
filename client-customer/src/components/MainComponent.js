@@ -39,7 +39,7 @@ class Main extends Component {
         <div> {/* 40px Inform + 80px Header = 120px */}
           
           {/* Sidebar Nav dọc bên trái */}
-          <aside className="fixed left-0 top-[120px] bottom-0 w-64 bg-white border-r z-[90] hidden md:block">
+          <aside className="fixed left-0 top-[100px] bottom-0 w-55 bg-white border-r z-[90] hidden md:block">
             {/* Categories list */}
           </aside>
 

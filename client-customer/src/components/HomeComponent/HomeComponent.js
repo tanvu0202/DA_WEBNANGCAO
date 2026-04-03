@@ -11,6 +11,7 @@ const Home = () => {
   const [categories, setCategories] = useState([]);
   const [categoryProducts, setCategoryProducts] = useState({});
 
+  
   // 1. Khai báo các hàm API trước (Tránh lỗi ReferenceError)
   const apiGetProductsByCategory = (categoryId) => {
     axios.get(`/api/customer/products/category/${categoryId}`).then((res) => {
@@ -20,6 +21,7 @@ const Home = () => {
       }));
     });
   };
+
 
   const apiGetCategories = () => {
     axios.get('/api/customer/categories').then((res) => {
