@@ -3,14 +3,14 @@ import React, { Component } from "react";
 import withRouter from "../utils/withRouter";
 import MyContext from "../contexts/MyContext";
 import Modal from "react-modal";
-import { FaSearchPlus } from "react-icons/fa";
 import Swal from "sweetalert2";
-import { FaCartPlus   } from "react-icons/fa";
-import { MdOutlineZoomOutMap } from "react-icons/md";
-Modal.setAppElement("#root"); // Đảm bảo rằng Modal biết phần tử gốc của ứng dụng
+import { FaCartPlus, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { MdOutlineZoomOutMap, MdOutlineLocalShipping, MdVerifiedUser } from "react-icons/md";
+
+Modal.setAppElement("#root");
 
 class ProductDetail extends Component {
-  static contextType = MyContext; // using this.context to access global state
+  static contextType = MyContext;
   constructor(props) {
     super(props);
     this.state = {
@@ -24,167 +24,173 @@ class ProductDetail extends Component {
   componentDidMount() {
     const params = this.props.params;
     this.apiGetProduct(params.id);
+    window.scrollTo(0, 0);
   }
 
-  // APIs
   apiGetProduct(id) {
     axios.get("/api/customer/products/" + id).then((res) => {
-      const result = res.data;
-      this.setState({ product: result });
+      this.setState({ product: res.data });
     });
   }
 
-  // Event handlers
-  btnAdd2CartClick(e) {
+  btnAdd2CartClick = (e) => {
     e.preventDefault();
-    const product = this.state.product;
-    const quantity = parseInt(this.state.txtQuantity);
-    if (quantity) {
+    const { product, txtQuantity } = this.state;
+    const quantity = parseInt(txtQuantity);
+    
+    if (quantity > 0) {
       const mycart = this.context.mycart;
-      const index = mycart.findIndex((x) => x.product._id === product._id); // check if the _id exists in mycart
+      const index = mycart.findIndex((x) => x.product._id === product._id);
       if (index === -1) {
-        const newItem = { product: product, quantity: quantity };
-        mycart.push(newItem);
+        mycart.push({ product: product, quantity: quantity });
       } else {
         mycart[index].quantity += quantity;
       }
-      this.context.setMycart(mycart);
+      this.context.setMycart([...mycart]);
+      
       Swal.fire({
-        title: "Thành công",
-        text: "Sản phẩm đã được thêm vào giỏ hàng!",
+        title: "Tuyệt vời!",
+        text: `Đã thêm ${quantity} ${product.name} vào giỏ hàng`,
         icon: "success",
+        toast: true,
+        position: 'top-end',
         showConfirmButton: false,
-        timer: 1500
-      });
-    } else {
-      Swal.fire({
-        title: "Lỗi",
-        text: "Vui lòng nhập số lượng hợp lệ!",
-        icon: "error",
-        showConfirmButton: false,
-        timer: 1500
+        timer: 3000,
+        timerProgressBar: true,
       });
     }
   }
 
-  increment = () => {
-    this.setState({ txtQuantity: this.state.txtQuantity + 1 });
-  };
+  increment = () => this.setState({ txtQuantity: this.state.txtQuantity + 1 });
+  decrement = () => this.setState({ txtQuantity: Math.max(1, this.state.txtQuantity - 1) });
 
-  decrement = () => {
-    this.setState({ txtQuantity: Math.max(1, this.state.txtQuantity - 1) });
-  };
-
-  openModal = (image) => {
-    this.setState({ isModalOpen: true, modalImage: image });
-  };
-
-  closeModal = () => {
-    this.setState({ isModalOpen: false, modalImage: "" });
-  };
+  openModal = (image) => this.setState({ isModalOpen: true, modalImage: image });
+  closeModal = () => this.setState({ isModalOpen: false, modalImage: "" });
 
   render() {
     const { product, txtQuantity, isModalOpen, modalImage } = this.state;
-    if (product) {
-      return (
-        <div className="flex flex-col items-center bg-white container-80  ">
-          <div className="flex flex-col md:flex-row justify-between items-center bg-white rounded-md p-6 ml-[275px]">
-            <div className="w-full md:w-1/2 flex justify-center relative">
-              <img
-                src={"data:image/jpg;base64," + product.image}
-                className="object-cover w-full max-w-md h-auto rounded-md cursor-pointer"
-                alt={product.name}
-                
-              />
-              <div className="absolute bottom-2 left-2 flex items-center justify-center rounded-full p-2">
-                <MdOutlineZoomOutMap 
-                onClick={() => this.openModal("data:image/jpg;base64," + product.image)} 
-                className="text-accent text-xl cursor-pointer border border-accent rounded-full w-10 h-10 p-2 hover:text-white hover:bg-primary transition-all duration-500" />
+    if (!product) return (
+      <div className="flex justify-center items-center h-96 text-stone-400 animate-pulse font-serif">
+        Đang chuẩn bị hương vị...
+      </div>
+    );
+
+    return (
+      <div className="bg-[#fffcf9] min-h-screen pb-20 animate__animated animate__fadeIn">
+        <div className="container-80 pt-10">
+          {/* Breadcrumb Navigation */}
+          <nav className="flex items-center text-[11px] uppercase tracking-[0.2em] text-stone-400 mb-8">
+            <span className="hover:text-orange-600 cursor-pointer transition-colors">Trang chủ</span>
+            <span className="mx-3 text-stone-300">/</span>
+            <span className="hover:text-orange-600 cursor-pointer transition-colors">{product.category.name}</span>
+            <span className="mx-3 text-stone-300">/</span>
+            <span className="text-stone-600 font-bold">{product.name}</span>
+          </nav>
+
+          <div className="flex flex-col lg:flex-row gap-16 bg-white rounded-[3rem] p-8 lg:p-16 shadow-xl shadow-stone-200/50 border border-stone-100">
+            
+            {/* Cột trái: Hình ảnh */}
+            <div className="lg:w-1/2 relative group">
+              <div className="aspect-square rounded-[2.5rem] overflow-hidden bg-stone-50 border border-stone-100 shadow-inner">
+                <img
+                  src={"data:image/jpg;base64," + product.image}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  alt={product.name}
+                />
               </div>
+              <button 
+                onClick={() => this.openModal("data:image/jpg;base64," + product.image)}
+                className="absolute bottom-6 right-6 bg-white/90 backdrop-blur shadow-lg p-4 rounded-2xl text-[#442c1e] hover:bg-[#442c1e] hover:text-white transition-all transform active:scale-90"
+              >
+                <MdOutlineZoomOutMap size={24} />
+              </button>
             </div>
-            <div className="md:pl-10 mt-6 md:mt-0 space-y-3 w-1/2">
-              <div>
-                <div className="flex items-center text-sm uppercase text-gray-700">
-                  <p className="opacity-70">Trang chủ</p>
-                  <p className="mx-3">/</p>
-                  <p className="opacity-70 uppercase">{product.category.name}</p>
-                </div>
-                <h2 className="text-2xl font-bold text-gray-800 pt-2 md:mt-0 uppercase">
+
+            {/* Cột phải: Thông tin */}
+            <div className="lg:w-1/2 flex flex-col">
+              <div className="mb-6">
+                <span className="inline-block bg-orange-100 text-orange-700 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest mb-4">
+                  Sản phẩm bán chạy
+                </span>
+                <h1 className="text-4xl lg:text-5xl font-serif font-bold text-[#2d1b0f] leading-tight mb-4">
                   {product.name}
-                </h2>
-                <div className="h-[3px] bg-gray-200 my-4 w-full max-w-[30px]"></div>
-              </div>
-              <div className="flex text-gray-600 text-2xl gap-2 mt-0">
-                <p className="font-bold text-[#111]">
-                  {`${product.price.toLocaleString()} đ`}
+                </h1>
+                <p className="text-2xl font-bold text-orange-700 font-sans">
+                  {product.price.toLocaleString()} <span className="text-sm">₫</span>
                 </p>
               </div>
-              <div className="flex items-center mt-5">
+
+              <div className="w-16 h-1 bg-orange-400 rounded-full mb-8"></div>
+
+              <p className="text-stone-500 leading-relaxed mb-8 text-sm italic">
+                Tận hưởng hương vị tinh túy được tuyển chọn từ những hạt cà phê chất lượng nhất. 
+                Công thức pha chế độc quyền của Next Coffee mang đến trải nghiệm khó quên.
+              </p>
+
+              {/* Bộ chọn số lượng & Nút đặt hàng */}
+              <div className="flex flex-wrap items-center gap-6 mb-10">
+                <div className="flex items-center bg-stone-100 rounded-2xl p-1 border border-stone-200">
+                  <button onClick={this.decrement} className="w-10 h-10 flex items-center justify-center text-stone-600 hover:text-orange-600 transition-colors">
+                    <FaChevronLeft size={12} />
+                  </button>
+                  <input
+                    type="text"
+                    readOnly
+                    value={txtQuantity}
+                    className="w-12 text-center bg-transparent font-bold text-[#2d1b0f]"
+                  />
+                  <button onClick={this.increment} className="w-10 h-10 flex items-center justify-center text-stone-600 hover:text-orange-600 transition-colors">
+                    <FaChevronRight size={12} />
+                  </button>
+                </div>
+
                 <button
-                  className="bg-gray-100 border border-gray-300 text-gray-700 hover:bg-gray-100 px-3 py-[6.5px]"
-                  onClick={this.decrement}
+                  onClick={this.btnAdd2CartClick}
+                  className="flex-1 min-w-[200px] bg-[#2d1b0f] text-white py-4 px-8 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-[#442c1e] shadow-lg shadow-stone-300 transition-all active:scale-95 uppercase text-xs tracking-widest"
                 >
-                  -
-                </button>
-                <input
-                style={{width: '50px'}}
-                  type="email"
-                  min="1"
-                  max="99"
-                  value={txtQuantity}
-                  onChange={(e) => this.setState({ txtQuantity: e.target.value })}
-                  className="text-center border border-gray-300 py-2 w-2 focus:bg-border-300 hover:bg-border-300 active:bg-border-300"
-                />
-                <button
-                  className="bg-gray-100 border border-gray-300 text-gray-700 hover:bg-gray-100 px-3 py-[6.5px]"
-                  onClick={this.increment}
-                >
-                  +
-                </button>
-                <button
-                  className="bg-primary text-white px-6 py-[9.5px] font-bold text-sm ml-6 rounded-sm flex items-center"
-                  onClick={(e) => this.btnAdd2CartClick(e)}
-                >
-                  <FaCartPlus className="mr-2"/>
+                  <FaCartPlus size={18} />
                   Thêm vào giỏ hàng
                 </button>
               </div>
-              <div className="mt-6">
-                <div className="text-gray-600 border-t border-dashed border-[#ddd] text-sm py-1">Mã sản phẩm: {product._id}</div>
-                <div className="text-gray-600 border-t border-dashed border-[#ddd] text-sm py-1">Danh mục: {product.category.name}</div>
+
+              {/* Trust badges */}
+              <div className="grid grid-cols-2 gap-4 pt-8 border-t border-stone-100">
+                <div className="flex items-center gap-3 text-stone-400 text-[11px] font-medium uppercase tracking-tighter">
+                  <MdOutlineLocalShipping size={20} className="text-orange-600" />
+                  Giao hàng trong 30 phút
+                </div>
+                <div className="flex items-center gap-3 text-stone-400 text-[11px] font-medium uppercase tracking-tighter">
+                  <MdVerifiedUser size={20} className="text-orange-600" />
+                  Đảm bảo vệ sinh ATTP
+                </div>
               </div>
             </div>
           </div>
-
-          <Modal
-            isOpen={isModalOpen}
-            onRequestClose={this.closeModal}
-            contentLabel="Image Modal"
-            className="fixed inset-0 z-[999999999] overflow-auto bg-black bg-opacity-75 flex items-center justify-center"
-            overlayClassName="fixed inset-0 bg-black bg-opacity-50"
-            style={{
-              overlay: { backgroundColor: "rgba(0, 0, 0, 0.75)" },
-              content: { border: "none", background: "none", overflow: "visible" },
-            }}
-          >
-            <div className="relative w-full h-full flex items-center justify-center">
-              <button
-                className="absolute top-2 right-2 text-white text-2xl z-10"
-                onClick={this.closeModal}
-              >
-                &times;
-              </button>
-              <img
-                src={modalImage}
-                alt="Modal"
-                className="object-contain w-[600px] h-[600px] mx-auto"
-              />
-            </div>
-          </Modal>
         </div>
-      );
-    }
-    return <div>Loading...</div>;
+
+        {/* Modal Zoom hiện đại */}
+        <Modal
+          isOpen={isModalOpen}
+          onRequestClose={this.closeModal}
+          className="fixed inset-0 flex items-center justify-center p-4 z-[9999]"
+          overlayClassName="fixed inset-0 bg-black/90 backdrop-blur-sm z-[9998]"
+        >
+          <div className="relative max-w-4xl w-full h-full flex items-center justify-center">
+            <button
+              className="absolute top-0 right-0 text-white text-4xl p-4 hover:text-orange-500 transition-colors"
+              onClick={this.closeModal}
+            >
+              &times;
+            </button>
+            <img
+              src={modalImage}
+              alt="Zoomed"
+              className="max-w-full max-h-full object-contain rounded-xl shadow-2xl animate__animated animate__zoomIn"
+            />
+          </div>
+        </Modal>
+      </div>
+    );
   }
 }
 
