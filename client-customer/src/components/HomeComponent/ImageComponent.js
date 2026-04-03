@@ -26,83 +26,86 @@ const banners = [
 ];
 
 export default function ImageComponent() {
-  // State để quản lý việc đang xem danh sách hay xem chi tiết
   const [selectedId, setSelectedId] = useState(null);
-
-  // Tìm dữ liệu của item đang được chọn
   const currentItem = banners.find(item => item.id === selectedId);
 
-  // Giao diện 1: Trang Chi Tiết
-  if (selectedId && currentItem) {
-    return (
-      <div className="max-w-4xl mx-auto p-4 md:p-10 bg-white min-h-screen animate-fadeIn">
-        {/* Nút trở về nhỏ ở trên */}
-        <button 
-          onClick={() => setSelectedId(null)}
-          className="flex items-center gap-1 text-stone-400 hover:text-orange-600 transition-colors text-sm mb-6 group"
-        >
-          <FaChevronLeft size={12} className="group-hover:-translate-x-1 transition-transform" /> 
-          Trở về danh sách
-        </button>
+  return (
+    <>
+      {/* --- THÊM CSS TRỰC TIẾP TẠI ĐÂY --- */}
+      <style>
+        {`
+          @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          .animate-fadeIn {
+            animation: fadeIn 0.6s ease-out forwards;
+          }
+        `}
+      </style>
 
-        <div className="w-full h-[300px] md:h-[450px] rounded-[2.5rem] overflow-hidden mb-8 shadow-2xl">
-          <img src={currentItem.src} alt={currentItem.title} className="w-full h-full object-cover" />
-        </div>
-
-        <div className="space-y-6 px-2">
-          <h1 className="text-4xl font-serif font-bold text-[#4B2E2B]">{currentItem.title}</h1>
-          <p className="text-xl text-orange-600 font-medium italic">{currentItem.desc}</p>
-          <div className="w-24 h-1 bg-orange-500"></div>
-          
-          <div className="text-stone-700 leading-relaxed text-lg whitespace-pre-line border-l-4 border-stone-100 pl-6 italic">
-            {currentItem.story}
-          </div>
-        </div>
-
-        {/* Nút trở về to bên dưới */}
-        <div className="mt-16 pt-10 border-t border-stone-50 flex justify-center">
+      {selectedId && currentItem ? (
+        // Giao diện 1: Trang Chi Tiết
+        <div className="max-w-4xl mx-auto p-4 md:p-10 bg-white min-h-screen animate-fadeIn">
           <button 
             onClick={() => setSelectedId(null)}
-            className="flex items-center gap-3 bg-[#4B2E2B] text-white px-12 py-4 rounded-full font-bold hover:bg-orange-900 transition-all shadow-xl active:scale-95"
+            className="flex items-center gap-1 text-stone-400 hover:text-orange-600 transition-colors text-sm mb-6 group"
           >
-            <FaArrowLeft /> QUAY LẠI TRANG CHỦ
+            <FaChevronLeft size={12} className="group-hover:-translate-x-1 transition-transform" /> 
+            Trở về danh sách
           </button>
-        </div>
-      </div>
-    );
-  }
 
-  // Giao diện 2: Danh sách Banner ban đầu
-  return (
-    <div className="flex flex-col md:flex-row gap-6 py-8 px-4 animate-fadeIn">
-      {banners.map((banner) => (
-        <div 
-          key={banner.id} 
-          onClick={() => setSelectedId(banner.id)} 
-          className="group relative flex-1 h-[350px] overflow-hidden rounded-[2.5rem] shadow-xl bg-stone-100 cursor-pointer"
-        >
-          {/* Ảnh nền */}
-          <img
-            src={banner.src}
-            alt={banner.title}
-            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-          />
+          <div className="w-full h-[300px] md:h-[450px] rounded-[2.5rem] overflow-hidden mb-8 shadow-2xl">
+            <img src={currentItem.src} alt={currentItem.title} className="w-full h-full object-cover" />
+          </div>
 
-          {/* Lớp phủ màu */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#2d1b0f]/90 via-black/20 to-transparent opacity-70 group-hover:opacity-80 transition-opacity" />
+          <div className="space-y-6 px-2">
+            <h1 className="text-4xl font-serif font-bold text-[#4B2E2B]">{currentItem.title}</h1>
+            <p className="text-xl text-orange-600 font-medium italic">{currentItem.desc}</p>
+            <div className="w-24 h-1 bg-orange-500"></div>
+            
+            <div className="text-stone-700 leading-relaxed text-lg whitespace-pre-line border-l-4 border-stone-100 pl-6 italic">
+              {currentItem.story}
+            </div>
+          </div>
 
-          {/* Nội dung */}
-          <div className="absolute bottom-0 left-0 p-8 w-full">
-            <h3 className="text-white font-serif text-2xl font-bold mb-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-              {banner.title}
-            </h3>
-            <p className="text-stone-300 text-sm italic opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">
-              {banner.desc}
-            </p>
-            <div className="mt-4 w-12 h-[2px] bg-orange-500 group-hover:w-24 transition-all duration-500" />
+          <div className="mt-16 pt-10 border-t border-stone-50 flex justify-center">
+            <button 
+              onClick={() => setSelectedId(null)}
+              className="flex items-center gap-3 bg-[#4B2E2B] text-white px-12 py-4 rounded-full font-bold hover:bg-orange-900 transition-all shadow-xl active:scale-95"
+            >
+              <FaArrowLeft /> QUAY LẠI TRANG CHỦ
+            </button>
           </div>
         </div>
-      ))}
-    </div>
+      ) : (
+        // Giao diện 2: Danh sách Banner ban đầu
+        <div className="flex flex-col md:flex-row gap-6 py-8 px-4 animate-fadeIn">
+          {banners.map((banner) => (
+            <div 
+              key={banner.id} 
+              onClick={() => setSelectedId(banner.id)} 
+              className="group relative flex-1 h-[350px] overflow-hidden rounded-[2.5rem] shadow-xl bg-stone-100 cursor-pointer"
+            >
+              <img
+                src={banner.src}
+                alt={banner.title}
+                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#2d1b0f]/90 via-black/20 to-transparent opacity-70 group-hover:opacity-80 transition-opacity" />
+              <div className="absolute bottom-0 left-0 p-8 w-full">
+                <h3 className="text-white font-serif text-2xl font-bold mb-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                  {banner.title}
+                </h3>
+                <p className="text-stone-300 text-sm italic opacity-0 group-hover:opacity-100 transition-all duration-500 delay-100">
+                  {banner.desc}
+                </p>
+                <div className="mt-4 w-12 h-[2px] bg-orange-500 group-hover:w-24 transition-all duration-500" />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </>
   );
 }

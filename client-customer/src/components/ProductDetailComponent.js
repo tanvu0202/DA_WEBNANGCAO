@@ -129,18 +129,30 @@ class ProductDetail extends Component {
 
               {/* Bộ chọn số lượng & Nút đặt hàng */}
               <div className="flex flex-wrap items-center gap-6 mb-10">
-                <div className="flex items-center bg-stone-100 rounded-2xl p-1 border border-stone-200">
-                  <button onClick={this.decrement} className="w-10 h-10 flex items-center justify-center text-stone-600 hover:text-orange-600 transition-colors">
-                    <FaChevronLeft size={12} />
+                <div className="flex items-center bg-white border border-stone-200 rounded-full p-1 shadow-sm w-fit transition-all hover:border-orange-200">
+                  {/* Nút Giảm */}
+                  <button 
+                    onClick={this.decrement} 
+                    className="w-8 h-8 flex items-center justify-center rounded-full text-stone-400 hover:bg-stone-100 hover:text-orange-600 active:scale-90 transition-all duration-200"
+                  >
+                    {/* Thay bằng FaMinus nhìn sẽ chuyên nghiệp hơn Chevron */}
+                    <span className="font-bold">−</span> 
                   </button>
+
+                  {/* Số lượng */}
                   <input
                     type="text"
                     readOnly
                     value={txtQuantity}
-                    className="w-12 text-center bg-transparent font-bold text-[#2d1b0f]"
+                    className="w-10 text-center bg-transparent font-bold text-[#4B2E2B] text-sm focus:outline-none select-none"
                   />
-                  <button onClick={this.increment} className="w-10 h-10 flex items-center justify-center text-stone-600 hover:text-orange-600 transition-colors">
-                    <FaChevronRight size={12} />
+
+                  {/* Nút Tăng */}
+                  <button 
+                    onClick={this.increment} 
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-[#4B2E2B] text-white hover:bg-orange-600 active:scale-90 transition-all duration-200 shadow-sm"
+                  >
+                    <span className="font-bold">+</span>
                   </button>
                 </div>
 

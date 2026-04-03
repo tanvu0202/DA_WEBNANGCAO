@@ -1,21 +1,60 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import Slider from 'react-slick';
 import { Link } from 'react-router-dom';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { FaArrowLeft, FaArrowRight, FaPlus } from 'react-icons/fa'; // Thêm icon Plus cho chất Coffee
+import { FaArrowLeft, FaArrowRight, FaPlus } from 'react-icons/fa';
 import WOW from 'wowjs';
 import 'animate.css/animate.min.css';
+import Swal from 'sweetalert2';
+
+// --- ĐÃ SỬA ĐƯỜNG DẪN: Lùi 2 cấp để tìm thư mục contexts hoặc file MyContext ---
+// Nếu file của bạn nằm ở src/MyContext.js thì dùng: ../../MyContext
+// Nếu file của bạn nằm ở src/contexts/MyContext.js thì dùng: ../../contexts/MyContext
+import MyContext from '../../contexts/MyContext'; 
 
 const ProductSlider = ({ products }) => {
+  const { mycart, setMycart } = useContext(MyContext);
+
   useEffect(() => {
     const wow = new WOW.WOW({ live: false });
     wow.init();
   }, []);
 
+  // --- HÀM XỬ LÝ THÊM GIỎ HÀNG: Fix lỗi nhấn không ăn và bị nhảy trang ---
+  const handleAddToCart = (e, item) => {
+    e.preventDefault(); // Chặn Link chuyển trang
+    e.stopPropagation(); // Chặn sự kiện lan lên thẻ cha
+
+    const currentCart = [...mycart];
+    const index = currentCart.findIndex((x) => x.product._id === item._id);
+
+    if (index !== -1) {
+      currentCart[index].quantity += 1;
+    } else {
+      currentCart.push({ product: item, quantity: 1 });
+    }
+
+    setMycart(currentCart);
+
+    // Thông báo Toast nhỏ xinh
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 1500,
+      timerProgressBar: true,
+    });
+
+    Toast.fire({
+      icon: 'success',
+      title: `Đã thêm ${item.name}`
+    });
+  };
+
   const settings = {
     dots: false,
-    infinite: products.length > 5, // Chỉ chạy vô hạn nếu đủ sản phẩm
+    infinite: products.length > 5,
     speed: 600,
     slidesToShow: 5,
     slidesToScroll: 1,
@@ -35,6 +74,7 @@ const ProductSlider = ({ products }) => {
         {products.map((item) => (
           <div key={item._id} className="p-3">
             <div className="bg-white rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 group/card border border-stone-100 flex flex-col h-full">
+              
               {/* Image Container */}
               <div className="relative overflow-hidden aspect-square">
                 <Link to={'/product/' + item._id}>
@@ -44,18 +84,26 @@ const ProductSlider = ({ products }) => {
                     className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110"
                   />
                 </Link>
-                {/* Nút thêm nhanh khi hover */}
-                <div className="absolute bottom-4 right-4 translate-y-12 group-hover/card:translate-y-0 transition-transform duration-300">
-                   <div className="bg-[#442c1e] text-white p-3 rounded-full shadow-lg cursor-pointer hover:bg-orange-700">
+
+                {/* FIX: ẨN NÚT (+), HIỆN KHI HOVER CARD */}
+                <div 
+                  onClick={(e) => handleAddToCart(e, item)}
+                  className="absolute bottom-4 right-4 translate-y-16 opacity-0 group-hover/card:translate-y-0 group-hover/card:opacity-100 transition-all duration-300 z-10"
+                >
+                   <div className="bg-[#442c1e] text-white p-3 rounded-full shadow-lg cursor-pointer hover:bg-orange-700 active:scale-90 transition-transform">
                       <FaPlus size={14} />
                    </div>
                 </div>
               </div>
 
               {/* Info Container */}
-              <div className="p-4 flex flex-col items-center text-center">
-                <Link to={'/product/' + item._id}>
-                  <h3 className='text-[#442c1e] font-bold text-base truncate w-full hover:text-orange-700 transition-colors uppercase tracking-tight'>
+              <div className="p-4 flex flex-col items-center text-center overflow-hidden">
+                <Link to={'/product/' + item._id} className="w-full">
+                  {/* FIX: TÊN DÀI TỰ RÚT GỌN (Truncate) */}
+                  <h3 
+                    className='text-[#442c1e] font-bold text-base truncate block w-full hover:text-orange-700 transition-colors uppercase tracking-tight'
+                    title={item.name}
+                  >
                     {item.name}
                   </h3>
                 </Link>
@@ -72,6 +120,7 @@ const ProductSlider = ({ products }) => {
   );
 };
 
+// --- CÁC NÚT ĐIỀU HƯỚNG ---
 const NextArrow = ({ onClick }) => (
   <button
     className="absolute -right-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white shadow-lg rounded-full flex items-center justify-center text-stone-800 hover:bg-[#442c1e] hover:text-white transition-all opacity-0 group-hover:opacity-100"
