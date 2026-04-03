@@ -63,7 +63,7 @@ const Home = () => {
   );
 
   return (
-    <div className="bg-[#fffcf9] min-h-screen pb-20">
+    <div className="min-h-screen pb-20">
       {/* SECTION BANNER: Đã bỏ ml-[275px] để hình tràn hết độ dài khung */}
       <div className="w-full">
         <div className="container-80 pt-4">
