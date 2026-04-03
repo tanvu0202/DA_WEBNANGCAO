@@ -11,11 +11,15 @@ const Home = () => {
   const [categories, setCategories] = useState([]);
   const [categoryProducts, setCategoryProducts] = useState({});
 
-  useEffect(() => {
-    apiGetNewProducts();
-    apiGetHotProducts();
-    apiGetCategories();
-  }, [apiGetCategories]);
+  // 1. Khai báo các hàm API trước (Tránh lỗi ReferenceError)
+  const apiGetProductsByCategory = (categoryId) => {
+    axios.get(`/api/customer/products/category/${categoryId}`).then((res) => {
+      setCategoryProducts(prevState => ({
+        ...prevState,
+        [categoryId]: res.data
+      }));
+    });
+  };
 
   const apiGetCategories = () => {
     axios.get('/api/customer/categories').then((res) => {
@@ -39,14 +43,13 @@ const Home = () => {
     });
   };
 
-  const apiGetProductsByCategory = (categoryId) => {
-    axios.get(`/api/customer/products/category/${categoryId}`).then((res) => {
-      setCategoryProducts(prevState => ({
-        ...prevState,
-        [categoryId]: res.data
-      }));
-    });
-  };
+  // 2. Sử dụng useEffect sau khi các hàm đã được định nghĩa
+  useEffect(() => {
+    apiGetNewProducts();
+    apiGetHotProducts();
+    apiGetCategories();
+    // Để mảng rỗng [] để web chỉ load dữ liệu 1 lần duy nhất khi mở trang
+  }, []); 
 
   const SectionHeader = ({ title, subTitle, link }) => (
     <div className="flex items-center justify-between border-b-2 border-stone-200 pb-2 mb-6">
@@ -64,13 +67,11 @@ const Home = () => {
 
   return (
     <div className="bg-[#fffcf9] min-h-screen pb-20">
-      {/* SECTION BANNER: Đã bỏ ml-[275px] để hình tràn hết độ dài khung */}
       <div className="w-full">
         <div className="container-80 pt-4">
           <div className="full-drop-banner overflow-hidden rounded-xl shadow-md">
             <CarouselComponent />
           </div>
-          
           <div className="py-10 full-drop-image">
             <ImageComponent />
           </div>

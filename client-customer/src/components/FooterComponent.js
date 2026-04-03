@@ -1,32 +1,15 @@
 import React from 'react';
-import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaFacebookF, FaInstagram, FaTwitter, FaPinterestP, FaYoutube } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaPhoneAlt, FaEnvelope, FaFacebookF, FaInstagram, FaYoutube } from 'react-icons/fa';
 import logo from '../asset/img/logo.jpg';
 
 const FooterComponent = () => {
   return (
     <div className="w-full">
-      {/* Newsletter Section */}
-      <div className="container-80 pt-20">
-        <div className="bg-[#555555] text-white p-6 flex flex-wrap justify-between items-center rounded-t-lg">
-          <div className="text-lg font-semibold md:w-1/2 mb-4 md:mb-0">
-            ĐĂNG KÝ NHẬN BẢN TIN
-          </div>
-          <form className="flex items-center w-full md:w-1/3 h-12">
-            <input
-              type="email"
-              placeholder="Email của bạn..."
-              className="flex-grow p-3 text-black rounded-l-md outline-none h-full"
-            />
-            <button type="submit" className="bg-[#4B2E2B] text-white px-6 rounded-r-md h-full font-bold hover:bg-orange-800 transition-colors">
-              ĐĂNG KÝ
-            </button>
-          </form>
-        </div>
-      </div>
-
+      <hr className="border-t border-black opacity-10 mx-4" />
       {/* Main Footer Content */}
       <div id="footer" className="bg-white text-stone-600 container-80 border-t border-stone-100">
         <div className="container mx-auto flex flex-wrap justify-between py-10">
+          {/* ... (Các cột DỊCH VỤ, HỖ TRỢ, TÀI KHOẢN, LIÊN HỆ giữ nguyên) */}
           <div className="w-full sm:w-1/2 md:w-1/4 p-4">
             <h3 className="font-bold text-[#4B2E2B] mb-4 border-b-2 border-orange-500 w-fit">DỊCH VỤ</h3>
             <ul className='text-[14px] space-y-2'>
@@ -76,11 +59,12 @@ const FooterComponent = () => {
           </div>
         </div>
 
-        <hr className="border-stone-100" />
+        {/* THAY THẾ: Thẻ gạch ngang màu đen ở giữa các phần */}
+        <hr className="border-t border-black opacity-10 mx-4" />
 
         {/* Bottom Logo & Social Section */}
         <div className="flex flex-wrap items-start justify-between py-10 px-4 gap-8">
-          {/* Logo & Info */}
+          {/* ... (Phần Logo, App Store, Shipping Partners giữ nguyên) */}
           <div className="w-full lg:w-1/3">
             <div className="flex items-center gap-3 mb-4">
               <img className="h-12 w-12 rounded-full border border-stone-200" src={logo} alt="Logo" />
@@ -96,14 +80,12 @@ const FooterComponent = () => {
             </div>
           </div>
 
-          {/* App Stores */}
           <div className="w-full sm:w-auto flex flex-col gap-3 items-center">
             <p className="text-xs font-bold uppercase text-stone-400">Tải ứng dụng</p>
             <img src="http://steamark.monamedia.net/wp-content/uploads/2019/04/android.png" alt="Google Play" className="w-32 cursor-pointer" />
             <img src="http://steamark.monamedia.net/wp-content/uploads/2019/04/appstore.png" alt="App Store" className="w-32 cursor-pointer" />
           </div>
 
-          {/* Shipping Partners */}
           <div className="w-full sm:w-auto flex flex-col gap-4 items-center sm:items-end">
             <p className="text-xs font-bold uppercase text-stone-400">Đối tác vận chuyển</p>
             <img src="http://steamark.monamedia.net/wp-content/uploads/2019/04/Ninja-1.png" alt="Ninja Van" className="h-8 grayscale hover:grayscale-0 transition-all" />
