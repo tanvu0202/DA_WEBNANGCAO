@@ -15,7 +15,7 @@ const Home = () => {
     apiGetNewProducts();
     apiGetHotProducts();
     apiGetCategories();
-  }, [apiGetCategories]);
+  }, []);
 
   const apiGetCategories = () => {
     axios.get('/api/customer/categories').then((res) => {
