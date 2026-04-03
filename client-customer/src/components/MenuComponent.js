@@ -46,9 +46,7 @@ class Menu extends Component {
 
     return (
       <>
-        {/* HEADER: Chuyển sang sticky top-0. 
-          Nó sẽ nằm dưới Inform và dính vào đỉnh màn hình khi cuộn trang.
-        */}
+        {/* HEADER */}
         <header className="sticky top-0 w-full h-20 bg-white shadow-sm z-[100] flex items-center border-b border-stone-100 px-6">
           <div className="flex items-center justify-between w-full gap-8">
             {/* Logo */}
@@ -57,17 +55,23 @@ class Menu extends Component {
               <span className="text-xl font-serif font-bold text-[#2d1b0f]">NextCoffee.</span>
             </Link>
 
-            {/* Search Bar */}
-            <form className="flex-1 max-w-xl relative" onSubmit={this.btnSearchClick}>
+            {/* Search Bar - Ép buộc bo góc bằng dấu ! */}
+            <form className="flex-1 max-w-xl relative group" onSubmit={this.btnSearchClick}>
               <input
                 type="text"
-                className="w-full bg-stone-50 border border-stone-200 rounded-full py-2 px-5 focus:outline-none focus:border-orange-400 text-sm transition-all"
-                placeholder="Tìm sản phẩm..."
+                /* Sử dụng !rounded-full để ép buộc bo tròn tuyệt đối */
+                className="w-full bg-stone-50 border border-stone-200 !rounded-full py-2.5 pl-6 pr-12 focus:outline-none focus:border-orange-400 focus:bg-white focus:shadow-md text-sm transition-all duration-300"
+                placeholder="Tìm kiếm hương vị cà phê của bạn..."
                 value={this.state.txtKeyword}
                 onChange={(e) => this.setState({ txtKeyword: e.target.value })}
+                style={{ borderRadius: '9999px' }} /* Thêm style inline làm "bảo hiểm" cuối cùng */
               />
-              <button type="submit" className="absolute right-1 top-1/2 -translate-y-1/2 bg-[#4B2E2B] p-2 rounded-full text-white hover:bg-orange-600 transition-colors">
-                <FaSearch size={12} />
+              <button 
+                type="submit" 
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-[#4B2E2B] w-9 h-9 flex items-center justify-center !rounded-full text-white hover:bg-orange-600 hover:scale-105 transition-all shadow-sm"
+                style={{ borderRadius: '50%' }}
+              >
+                <FaSearch size={13} />
               </button>
             </form>
 
@@ -90,14 +94,11 @@ class Menu extends Component {
           </div>
         </header>
 
-        {/* SIDEBAR: Giữ fixed để luôn nằm bên trái. 
-          top-[calc(theme(spacing.20)+40px)]: tự động tính toán để nằm dưới Header + Inform.
-          Nếu Inform cao 40px và Header cao 20 (80px), tổng là 120px.
-        */}
-        <aside className="fixed left-0 top-0 pt-[120px] t-4 bottom-0 w-64 bg-white border-r border-stone-100 z-[90] overflow-y-auto px-4 hidden md:block">
+        {/* SIDEBAR */}
+        <aside className="fixed left-0 top-0 pt-[120px] bottom-0 w-64 bg-white border-r border-stone-100 z-[90] overflow-y-auto px-4 hidden md:block">
           <div className="flex items-center gap-2 text-[#4B2E2B] mb-6 px-2 opacity-70">
             <FaThList size={14} />
-            <span className="text-[15px] font-bold uppercase tracking-widest">Danh mục sản phẩm</span>
+            <span className="text-[15px] font-bold uppercase tracking-widest">Danh mục</span>
           </div>
           
           <ul className="space-y-1">
@@ -108,7 +109,7 @@ class Menu extends Component {
                   className={({isActive}) => `
                     flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all
                     ${isActive 
-                      ? 'bg-orange-50 text-orange-700 border-r-4 border-orange-500' 
+                      ? 'bg-orange-50 text-orange-700 border-r-4 border-orange-500 shadow-sm' 
                       : 'text-stone-600 hover:bg-stone-50 hover:text-[#4B2E2B]'}
                   `}
                 >
