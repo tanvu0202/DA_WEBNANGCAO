@@ -7,13 +7,13 @@ import banner3 from './banner3.png';
 import banner4 from './banner4.png';
 
 export default function CarouselComponent() {
-  const contentStyle = {
-    height: '500px',
-    color: '#fff',
-    lineHeight: '500px',
-    textAlign: 'center',
-    background: '#364d79',
-  };
+  // const contentStyle = {
+  //   height: '500px',
+  //   color: '#fff',
+  //   lineHeight: '500px',
+  //   textAlign: 'center',
+  //   background: '#364d79',
+  // };
 
   return (
     <Carousel autoplay>
