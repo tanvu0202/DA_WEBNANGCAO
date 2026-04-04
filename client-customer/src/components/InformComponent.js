@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import MyContext from '../contexts/MyContext';
 import { MdEmail, MdPhone } from 'react-icons/md';
 import { FaUnlockAlt } from 'react-icons/fa'; 
-import { Modal, Input, Button, Dropdown, Menu, Avatar } from 'antd';
+import { Modal, Input, Button, Dropdown, Avatar } from 'antd'; // Bỏ import Menu vì v5 dùng object items
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
@@ -68,9 +68,9 @@ const Inform = () => {
     }
   };
 
-  // --- Xử lý Đăng ký (Đã sửa lỗi undefined) ---
+  // --- Xử lý Đăng ký ---
   const handleSignup = (e) => {
-    e.preventDefault(); // Ngăn load lại trang
+    e.preventDefault();
     const account = {
       username: signupData.txtUsername,
       password: signupData.txtPassword,
@@ -103,17 +103,29 @@ const Inform = () => {
     setSignupData({ ...signupData, [name]: value });
   };
 
-  const userMenu = (
-    <Menu className="rounded-xl shadow-xl border border-stone-100 p-2">
-      <Menu.Item key="0"><Link to="/myprofile">Trang cá nhân</Link></Menu.Item>
-      <Menu.Item key="1"><Link to="/myorders">Đơn hàng</Link></Menu.Item>
-      <Menu.Divider />
-      <Menu.Item key="2" onClick={() => context.setToken('')} className="text-red-500 font-bold">Đăng xuất</Menu.Item>
-    </Menu>
-  );
+  // --- Cấu trúc Menu mới theo chuẩn Antd v5 (Xóa bỏ Warning children) ---
+  const userMenuItems = [
+    {
+      key: '0',
+      label: <Link to="/myprofile">Trang cá nhân</Link>,
+    },
+    {
+      key: '1',
+      label: <Link to="/myorders">Đơn hàng</Link>,
+    },
+    {
+      type: 'divider',
+    },
+    {
+      key: '2',
+      label: 'Đăng xuất',
+      danger: true, // Tự động làm chữ màu đỏ
+      onClick: () => context.setToken(''),
+      className: 'font-bold',
+    },
+  ];
 
   return (
-    /* fixed top-0 để dính lên đầu trang, z-[110] để nằm trên Sidebar */
     <div className="fixed top-0 left-0 right-0 bg-[#442c1e] text-white shadow-md z-[110] h-10 flex items-center">
       <div className="flex justify-between items-center container mx-auto px-6 w-full">
         <div className="flex items-center gap-6">
@@ -135,7 +147,15 @@ const Inform = () => {
               <span className='cursor-pointer hover:text-orange-400 transition-all' onClick={() => setIsSignupModalVisible(true)}>Đăng ký</span>
             </div>
           ) : (
-            <Dropdown overlay={userMenu} trigger={['click']} placement="bottomRight">
+            /* Thay đổi overlay thành menu, truyền items và className vào object */
+            <Dropdown 
+              menu={{ 
+                items: userMenuItems,
+                className: "rounded-xl shadow-xl border border-stone-100 p-2" 
+              }} 
+              trigger={['click']} 
+              placement="bottomRight"
+            >
               <div className="flex items-center gap-2 cursor-pointer bg-white/10 px-3 py-1 rounded-full border border-white/5">
                 <Avatar size="small" className="bg-orange-600 text-[10px] uppercase font-bold">
                   {context.customer.name.charAt(0)}
