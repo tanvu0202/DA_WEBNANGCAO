@@ -199,32 +199,49 @@ router.get('/orders/customer/:cid', JwtUtil.checkToken, async function (req, res
 });
 
 // Thống kê Analytics
+// Thêm vào api/admin.js
 router.get('/analytics', JwtUtil.checkToken, async function (req, res) {
   try {
-    // 1. Thống kê Người dùng
-    const totalCustomers = await CustomerDAO.selectByCount();
+    // 1. Lấy khách hàng (Phòng hờ nếu không có dữ liệu)
+    const customers = await CustomerDAO.selectAll() || [];
+    const totalCustomers = customers.length;
 
-    // 2. Thống kê Đơn hàng & Doanh thu
-    const allOrders = await OrderDAO.selectAll();
-    const approvedOrders = allOrders.filter(o => o.status === 'APPROVED');
-    const totalOrders = allOrders.length;
-    const totalRevenue = approvedOrders.reduce((sum, order) => sum + order.total, 0);
+    // 2. Lấy đơn hàng và tính doanh thu
+    const orders = await OrderDAO.selectAll() || [];
+    const approvedOrders = orders.filter(o => o.status === 'APPROVED');
+    
+    // Tính doanh thu an toàn: Ép kiểu Number và mặc định 0 nếu thiếu total
+    const revenue = approvedOrders.reduce((sum, order) => {
+      const orderTotal = Number(order.total) || 0;
+      return sum + orderTotal;
+    }, 0);
 
-    // 3. Thống kê Sản phẩm bán ra (Top 5)
-    // Tận dụng hàm selectTopHot đã có trong ProductDAO của bác
-    const topProducts = await ProductDAO.selectTopHot(5);
+    // 3. Lấy sản phẩm hot (Dùng selectTopNew làm dự phòng nếu selectTopHot lỗi)
+    let topProducts = [];
+    try {
+      topProducts = await ProductDAO.selectTopHot(5);
+      if (!topProducts || topProducts.length === 0) {
+        topProducts = await ProductDAO.selectTopNew(5); // Lấy sp mới nếu chưa có sp bán chạy
+      }
+    } catch (e) {
+      topProducts = await ProductDAO.selectTopNew(5);
+    }
 
+    // Trả về dữ liệu chuẩn cho Frontend
     res.json({
       customers: totalCustomers,
       orders: {
-        total: totalOrders,
+        total: orders.length,
         approved: approvedOrders.length,
-        revenue: totalRevenue
+        revenue: revenue
       },
-      topProducts: topProducts
+      topProducts: topProducts || []
     });
+
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    // Nếu vẫn lỗi, in lỗi ra Console để bác dễ xem dòng nào sai
+    console.error("LỖI ANALYTICS CỤ THỂ:", error);
+    res.status(500).json({ success: false, message: "Lỗi Server: " + error.message });
   }
 });
 
