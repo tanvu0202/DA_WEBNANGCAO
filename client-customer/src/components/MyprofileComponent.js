@@ -33,11 +33,15 @@ class Myprofile extends Component {
   render() {
     if (this.context.token === '') return (<Navigate replace to='/login' />);
     
-    const inputClass = "block w-full pl-10 pr-3 py-3 border border-stone-200 rounded-xl text-sm shadow-sm placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-4 focus:ring-orange-50 transition-all";
+    // Sử dụng !pl-14 để ép Tailwind ưu tiên, kèm theo style inline ở dưới
+    const inputClass = "block w-full pr-4 py-3 border border-stone-200 rounded-xl text-sm shadow-sm placeholder-stone-400 focus:outline-none focus:border-orange-400 focus:ring-4 focus:ring-orange-50 transition-all";
     const labelClass = "block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2 ml-1";
+    
+    // Style inline để đảm bảo khoảng cách luôn là 55px (đủ cho icon và khoảng trắng)
+    const fixedPadding = { paddingLeft: '55px' };
 
     return (
-      <div className="min-h-[80vh] flex items-center justify-center bg-[#fffcf9] py-12 px-4 animate__animated animate__fadeIn">
+      <div className="min-h-[80vh] flex items-center justify-center bg-[#fffcf9] py-12 px-4">
         <div className="max-w-2xl w-full bg-white rounded-[2.5rem] shadow-xl border border-stone-100 overflow-hidden flex flex-col md:flex-row">
           
           {/* Cột trái: Profile Decor */}
@@ -54,13 +58,13 @@ class Myprofile extends Component {
           <div className="md:w-2/3 p-8 md:p-12">
             <h2 className="text-2xl font-serif font-bold text-[#2d1b0f] mb-8">Thông tin cá nhân</h2>
             
-            <form className="space-y-5">
+            <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {/* Username */}
                 <div className="relative">
                   <label className={labelClass}>Tài khoản</label>
                   <div className="relative">
-                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-stone-400">
+                    <span className="absolute inset-y-0 left-0 pl-5 flex items-center text-stone-400 pointer-events-none z-10">
                       <FaUser size={14} />
                     </span>
                     <input 
@@ -68,6 +72,7 @@ class Myprofile extends Component {
                       className={inputClass + " bg-stone-50 cursor-not-allowed"} 
                       value={this.state.txtUsername} 
                       readOnly 
+                      style={fixedPadding}
                     />
                   </div>
                 </div>
@@ -76,7 +81,7 @@ class Myprofile extends Component {
                 <div className="relative">
                   <label className={labelClass}>Mật khẩu</label>
                   <div className="relative">
-                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-stone-400">
+                    <span className="absolute inset-y-0 left-0 pl-5 flex items-center text-stone-400 pointer-events-none z-10">
                       <FaLock size={14} />
                     </span>
                     <input 
@@ -85,6 +90,7 @@ class Myprofile extends Component {
                       className={inputClass} 
                       value={this.state.txtPassword} 
                       onChange={(e) => this.setState({ txtPassword: e.target.value })} 
+                      style={fixedPadding}
                     />
                   </div>
                 </div>
@@ -94,7 +100,7 @@ class Myprofile extends Component {
               <div className="relative">
                 <label className={labelClass}>Họ và tên</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-stone-400">
+                  <span className="absolute inset-y-0 left-0 pl-5 flex items-center text-stone-400 pointer-events-none z-10">
                     <FaIdCard size={14} />
                   </span>
                   <input 
@@ -102,6 +108,7 @@ class Myprofile extends Component {
                     className={inputClass} 
                     value={this.state.txtName} 
                     onChange={(e) => this.setState({ txtName: e.target.value })} 
+                    style={fixedPadding}
                   />
                 </div>
               </div>
@@ -111,7 +118,7 @@ class Myprofile extends Component {
                 <div className="relative">
                   <label className={labelClass}>Số điện thoại</label>
                   <div className="relative">
-                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-stone-400">
+                    <span className="absolute inset-y-0 left-0 pl-5 flex items-center text-stone-400 pointer-events-none z-10">
                       <FaPhone size={14} />
                     </span>
                     <input 
@@ -119,6 +126,7 @@ class Myprofile extends Component {
                       className={inputClass} 
                       value={this.state.txtPhone} 
                       onChange={(e) => this.setState({ txtPhone: e.target.value })} 
+                      style={fixedPadding}
                     />
                   </div>
                 </div>
@@ -127,7 +135,7 @@ class Myprofile extends Component {
                 <div className="relative">
                   <label className={labelClass}>Email</label>
                   <div className="relative">
-                    <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-stone-400">
+                    <span className="absolute inset-y-0 left-0 pl-5 flex items-center text-stone-400 pointer-events-none z-10">
                       <FaEnvelope size={14} />
                     </span>
                     <input 
@@ -135,6 +143,7 @@ class Myprofile extends Component {
                       className={inputClass} 
                       value={this.state.txtEmail} 
                       onChange={(e) => this.setState({ txtEmail: e.target.value })} 
+                      style={fixedPadding}
                     />
                   </div>
                 </div>
@@ -142,6 +151,7 @@ class Myprofile extends Component {
 
               <div className="pt-6">
                 <button 
+                  type="button"
                   onClick={(e) => this.btnUpdateClick(e)}
                   className="w-full bg-[#442c1e] text-white py-3.5 rounded-full font-bold text-sm hover:bg-[#5d3f2d] shadow-lg shadow-stone-200 transition-all active:scale-95 uppercase tracking-widest"
                 >

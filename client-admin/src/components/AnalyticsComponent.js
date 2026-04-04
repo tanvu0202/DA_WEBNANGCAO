@@ -1,130 +1,129 @@
-import React, { useEffect } from 'react';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-} from 'chart.js';
-import { Bar, Line } from 'react-chartjs-2';
-import { FaBox, FaUserPlus, FaMoneyBillWave, FaCoffee } from 'react-icons/fa';
-
-// 1. Đăng ký các thành phần - Em đã gom lại rất kỹ để tránh lỗi render
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend
-);
+import React, { useState, useEffect, useContext } from 'react';
+import axios from 'axios';
+import MyContext from '../contexts/MyContext';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 const Analytics = () => {
+  const { token } = useContext(MyContext);
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
-    document.title = "Next Coffee - Thống kê chi tiết";
-  }, []);
+    if (token) {
+      const config = { headers: { 'x-access-token': token } };
+      axios.get('/api/admin/analytics', config)
+        .then((res) => {
+          setData(res.data);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error("Lỗi lấy dữ liệu thống kê:", err);
+          setError("Không thể tải dữ liệu thống kê. Vui lòng kiểm tra lại Server.");
+          setLoading(false);
+        });
+    }
+  }, [token]);
 
-  // 2. Định nghĩa dữ liệu - Để riêng ra ngoài phần return cho sạch code
-  const dataDoanhThu = {
-    labels: ['Cà phê máy', 'Truyền thống', 'Trà', 'Đá xay', 'Bánh'],
-    datasets: [
-      {
-        label: 'Doanh thu (Triệu)',
-        data: [15, 12, 8, 10, 5],
-        backgroundColor: '#6F4E37',
-        borderRadius: 8,
-      },
-    ],
-  };
+  if (loading) return (
+    <div className="flex flex-col items-center justify-center p-20">
+      <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#8d6e63] border-r-transparent"></div>
+      <p className="mt-4 text-[#8d6e63] italic font-medium">Đang phân tích dữ liệu kinh doanh...</p>
+    </div>
+  );
 
-  const dataDonHang = {
-    labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
-    datasets: [
-      {
-        label: 'Số đơn hàng',
-        data: [45, 52, 48, 70, 85, 120, 110],
-        borderColor: '#A67B5B',
-        backgroundColor: 'rgba(166, 123, 91, 0.2)',
-        fill: true,
-        tension: 0.4,
-      },
-    ],
-  };
+  if (error) return <div className="p-10 text-center text-red-500 font-bold">{error}</div>;
+  if (!data) return <div className="p-10 text-center">Không có dữ liệu hiển thị.</div>;
 
-  // Cấu hình hiển thị cho biểu đồ
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false, // Để biểu đồ co giãn theo khung
-    plugins: {
-      legend: { position: 'top' },
-    },
-  };
+  // Chuẩn bị dữ liệu cho biểu đồ tròn (An toàn hơn với toán tử || 0)
+  const approved = data.orders?.approved || 0;
+  const total = data.orders?.total || 0;
+  
+  const orderPieData = [
+    { name: 'Đã duyệt', value: approved },
+    { name: 'Chờ/Khác', value: Math.max(0, total - approved) },
+  ];
+  
+  const COLORS = ['#8d6e63', '#d7ccc8'];
 
   return (
-    <div className="space-y-8 animate__animated animate__fadeIn animate__faster">
-      {/* Tiêu đề trang */}
-      <div className="border-b border-orange-100 pb-4">
-        <h2 className="text-3xl font-bold text-[#3d2b1f] font-serif uppercase tracking-tight">Thống kê Next Coffee</h2>
-      </div>
+    <div className="container mx-auto p-6 bg-[#fffcf9] min-h-screen">
+      <h2 className="text-3xl font-bold mb-8 text-[#3e2723] uppercase tracking-wider text-center">
+        Báo cáo kinh doanh
+      </h2>
 
-      {/* 3 Thẻ chỉ số (KPIs) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border-l-8 border-[#6F4E37] flex items-center justify-between">
-          <div>
-            <p className="text-xs text-gray-400 font-bold uppercase">Tổng đơn hàng</p>
-            <h3 className="text-2xl font-bold text-[#3d2b1f]">530 đơn</h3>
-          </div>
-          <FaBox className="text-[#6F4E37] opacity-20" size={32} />
+      {/* 1. THẺ THÔNG SỐ NHANH */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div className="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-[#8d6e63] hover:shadow-md transition-shadow">
+          <p className="text-stone-500 text-sm font-bold uppercase mb-2">Tổng khách hàng</p>
+          <p className="text-3xl font-black text-[#3e2723]">{data.customers || 0}</p>
         </div>
-
-        <div className="bg-white p-6 rounded-2xl shadow-sm border-l-8 border-[#A67B5B] flex items-center justify-between">
-          <div>
-            <p className="text-xs text-gray-400 font-bold uppercase">Khách mới</p>
-            <h3 className="text-2xl font-bold text-[#3d2b1f]">128 người</h3>
-          </div>
-          <FaUserPlus className="text-[#A67B5B] opacity-20" size={32} />
+        <div className="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-green-600 hover:shadow-md transition-shadow">
+          <p className="text-stone-500 text-sm font-bold uppercase mb-2">Doanh thu (Đã duyệt)</p>
+          <p className="text-3xl font-black text-green-700">
+            {(data.orders?.revenue || 0).toLocaleString()} ₫
+          </p>
         </div>
-
-        <div className="bg-white p-6 rounded-2xl shadow-sm border-l-8 border-[#4B3621] flex items-center justify-between">
-          <div>
-            <p className="text-xs text-gray-400 font-bold uppercase">Doanh thu tháng</p>
-            <h3 className="text-2xl font-bold text-[#3d2b1f]">50.2 Triệu</h3>
-          </div>
-          <FaMoneyBillWave className="text-green-600 opacity-20" size={32} />
+        <div className="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-blue-500 hover:shadow-md transition-shadow">
+          <p className="text-stone-500 text-sm font-bold uppercase mb-2">Tổng đơn hàng</p>
+          <p className="text-3xl font-black text-blue-600">{total}</p>
         </div>
       </div>
 
-      {/* Phần biểu đồ - Em đã bọc trong thẻ div có chiều cao cố định để tránh lỗi vỡ khung */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-50">
-          <div className="flex items-center mb-6 text-[#6F4E37] font-bold">
-            <FaCoffee className="mr-2" /> Doanh thu theo danh mục
-          </div>
-          <div className="h-64">
-            <Bar data={dataDoanhThu} options={options} />
+        {/* 2. BIỂU ĐỒ SẢN PHẨM BÁN CHẠY */}
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
+          <h3 className="text-lg font-bold mb-6 text-[#5d4037]">TOP 5 SẢN PHẨM HOT</h3>
+          <div className="h-80 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data.topProducts || []}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f5f5f5" />
+                <XAxis 
+                  dataKey="name" 
+                  tick={{fontSize: 10, fill: '#8c7851'}} 
+                  axisLine={{stroke: '#efebe9'}}
+                />
+                <YAxis axisLine={{stroke: '#efebe9'}} tick={{fill: '#8c7851'}} />
+                <Tooltip 
+                  contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} 
+                />
+                <Bar dataKey="price" fill="#8d6e63" radius={[4, 4, 0, 0]} barSize={40} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-50">
-          <div className="flex items-center mb-6 text-[#6F4E37] font-bold">
-            <FaMoneyBillWave className="mr-2" /> Lượng đơn hàng trong tuần
+        {/* 3. TỶ LỆ ĐƠN HÀNG */}
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex flex-col items-center">
+          <h3 className="text-lg font-bold mb-6 text-[#5d4037] self-start">TỶ LỆ DUYỆT ĐƠN</h3>
+          <div className="h-80 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie 
+                  data={orderPieData} 
+                  innerRadius={60} 
+                  outerRadius={80} 
+                  paddingAngle={5} 
+                  dataKey="value"
+                  stroke="none"
+                >
+                  {orderPieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
-          <div className="h-64">
-            <Line data={dataDonHang} options={options} />
+          <div className="flex gap-6 text-xs font-bold text-stone-500 mt-4">
+            <span className="flex items-center gap-2">
+              <span className="w-3 h-3 bg-[#8d6e63] rounded-full"></span> ĐÃ DUYỆT ({approved})
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="w-3 h-3 bg-[#d7ccc8] rounded-full"></span> CHỜ XỬ LÝ ({Math.max(0, total - approved)})
+            </span>
           </div>
         </div>
-      </div>
-
-      <div className="text-center text-gray-400 text-xs italic">
-        * Dữ liệu được cập nhật tự động mỗi 5 phút
       </div>
     </div>
   );
