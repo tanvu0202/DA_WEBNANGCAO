@@ -8,9 +8,6 @@ import WOW from 'wowjs';
 import 'animate.css/animate.min.css';
 import Swal from 'sweetalert2';
 
-// --- ĐÃ SỬA ĐƯỜNG DẪN: Lùi 2 cấp để tìm thư mục contexts hoặc file MyContext ---
-// Nếu file của bạn nằm ở src/MyContext.js thì dùng: ../../MyContext
-// Nếu file của bạn nằm ở src/contexts/MyContext.js thì dùng: ../../contexts/MyContext
 import MyContext from '../../contexts/MyContext'; 
 
 const ProductSlider = ({ products }) => {
@@ -21,7 +18,6 @@ const ProductSlider = ({ products }) => {
     wow.init();
   }, []);
 
-  // --- HÀM XỬ LÝ THÊM GIỎ HÀNG: Fix lỗi nhấn không ăn và bị nhảy trang ---
   const handleAddToCart = (e, item) => {
     e.preventDefault(); // Chặn Link chuyển trang
     e.stopPropagation(); // Chặn sự kiện lan lên thẻ cha
