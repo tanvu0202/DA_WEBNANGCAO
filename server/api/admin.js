@@ -9,6 +9,7 @@ const CategoryDAO = require('../models/CategoryDAO');
 const ProductDAO = require('../models/ProductDAO');
 const OrderDAO = require('../models/OrderDAO');
 const CustomerDAO = require('../models/CustomerDAO');
+const Coupon = require('../models/Coupon'); // Đã thêm để sửa lỗi ReferenceError
 
 // login
 router.post('/login', async function (req, res) {
@@ -60,14 +61,12 @@ router.delete('/categories/:id', JwtUtil.checkToken, async function (req, res) {
 });
 
 // product
-// product
 router.get('/products', JwtUtil.checkToken, async function (req, res) {
   try {
     const categoryId = req.query.category;
     const page = req.query.page ? parseInt(req.query.page) : 1;
-    const sizePage = req.query.size ? parseInt(req.query.size) : 6; // Nhận size 6
+    const sizePage = req.query.size ? parseInt(req.query.size) : 6;
 
-    // Tạo query lọc theo cấu trúc Object của bác
     let query = {};
     if (categoryId && categoryId !== 'all' && categoryId !== '') {
       query = { 'category._id': categoryId };
@@ -94,12 +93,11 @@ router.post('/products', JwtUtil.checkToken, async function (req, res) {
     const name = req.body.name;
     const priceRaw = req.body.price ? req.body.price.toString().replace(/\./g, '') : "0";
     const price = parseInt(priceRaw);
-    const cid = req.body.category; // Đây là nơi đang bị rỗng ""
+    const cid = req.body.category;
     const image = req.body.image;
-    const description = req.body.description; // Lấy thêm description
+    const description = req.body.description;
     const now = new Date().getTime();
     
-    // BỔ SUNG: Kiểm tra nếu chưa có ID danh mục thì báo lỗi luôn, không chạy tiếp
     if (!cid || cid === "") {
       return res.json({ success: false, message: 'Vui lòng chọn danh mục sản phẩm!' });
     }
@@ -199,35 +197,28 @@ router.get('/orders/customer/:cid', JwtUtil.checkToken, async function (req, res
 });
 
 // Thống kê Analytics
-// Thêm vào api/admin.js
 router.get('/analytics', JwtUtil.checkToken, async function (req, res) {
   try {
-    // 1. Lấy khách hàng (Phòng hờ nếu không có dữ liệu)
     const customers = await CustomerDAO.selectAll() || [];
     const totalCustomers = customers.length;
-
-    // 2. Lấy đơn hàng và tính doanh thu
     const orders = await OrderDAO.selectAll() || [];
     const approvedOrders = orders.filter(o => o.status === 'APPROVED');
     
-    // Tính doanh thu an toàn: Ép kiểu Number và mặc định 0 nếu thiếu total
     const revenue = approvedOrders.reduce((sum, order) => {
       const orderTotal = Number(order.total) || 0;
       return sum + orderTotal;
     }, 0);
 
-    // 3. Lấy sản phẩm hot (Dùng selectTopNew làm dự phòng nếu selectTopHot lỗi)
     let topProducts = [];
     try {
       topProducts = await ProductDAO.selectTopHot(5);
       if (!topProducts || topProducts.length === 0) {
-        topProducts = await ProductDAO.selectTopNew(5); // Lấy sp mới nếu chưa có sp bán chạy
+        topProducts = await ProductDAO.selectTopNew(5);
       }
     } catch (e) {
       topProducts = await ProductDAO.selectTopNew(5);
     }
 
-    // Trả về dữ liệu chuẩn cho Frontend
     res.json({
       customers: totalCustomers,
       orders: {
@@ -239,9 +230,42 @@ router.get('/analytics', JwtUtil.checkToken, async function (req, res) {
     });
 
   } catch (error) {
-    // Nếu vẫn lỗi, in lỗi ra Console để bác dễ xem dòng nào sai
     console.error("LỖI ANALYTICS CỤ THỂ:", error);
     res.status(500).json({ success: false, message: "Lỗi Server: " + error.message });
+  }
+});
+
+// --- PHẦN COUPON (ĐÃ SỬA LỖI ĐỂ ĐỒNG BỘ VỚI HỆ THỐNG CỦA BẠN) ---
+
+// Lấy danh sách mã
+router.get('/coupons', JwtUtil.checkToken, async (req, res) => {
+  try {
+    const coupons = await Coupon.find().sort({ createdAt: -1 });
+    res.json(coupons);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Thêm mới
+router.post('/coupons', JwtUtil.checkToken, async (req, res) => {
+  try {
+    const newCoupon = req.body;
+    const result = await Coupon.create(newCoupon);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Xóa mã
+router.delete('/coupons/:id', JwtUtil.checkToken, async (req, res) => {
+  try {
+    const id = req.params.id;
+    const result = await Coupon.findByIdAndDelete(id);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 

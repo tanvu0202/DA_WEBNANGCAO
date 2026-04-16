@@ -1,6 +1,16 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FaHome, FaTags, FaCoffee, FaReceipt, FaUserFriends, FaSignOutAlt, FaBars, FaTimes } from "react-icons/fa";
+import { 
+  FaHome, 
+  FaTags, 
+  FaCoffee, 
+  FaReceipt, 
+  FaUserFriends, 
+  FaSignOutAlt, 
+  FaBars, 
+  FaTimes,
+  FaTicketAlt // Import thêm icon mã giảm giá
+} from "react-icons/fa";
 import MyContext from "../contexts/MyContext";
 
 const Menu = () => {
@@ -70,6 +80,7 @@ const Menu = () => {
             { path: "/admin/home", icon: <FaHome />, label: "Trang chủ" },
             { path: "/admin/category", icon: <FaTags />, label: "Danh mục" },
             { path: "/admin/product", icon: <FaCoffee />, label: "Sản phẩm" },
+            { path: "/admin/coupon", icon: <FaTicketAlt />, label: "Mã giảm giá" }, // Đã thêm mục này
             { path: "/admin/order", icon: <FaReceipt />, label: "Đơn hàng" },
             { path: "/admin/customer", icon: <FaUserFriends />, label: "Khách hàng" },
           ].map((item) => (

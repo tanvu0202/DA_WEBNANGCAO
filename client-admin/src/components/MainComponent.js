@@ -8,6 +8,7 @@ import Product from './ProductComponent';
 import Order from './OrderComponent';
 import Customer from './CustomerComponent';
 import Analytics from './AnalyticsComponent';
+import Coupon from './CouponComponent';
 
 const Main = () => {
   const { token } = useContext(MyContext);
@@ -34,6 +35,7 @@ const Main = () => {
               <Route path='/admin/home' element={<Home />} />
               <Route path='/admin/category' element={<Category />} />
               <Route path='/admin/product' element={<Product />} />
+              <Route path='/admin/coupon' element={<Coupon />} />
               <Route path='/admin/order' element={<Order />} />
               <Route path='/admin/customer' element={<Customer />} />
               <Route path='/admin/analytics' element={<Analytics />} />
