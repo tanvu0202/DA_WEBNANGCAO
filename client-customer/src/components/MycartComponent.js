@@ -4,8 +4,9 @@ import CartUtil from '../utils/CartUtil';
 import axios from 'axios';
 import withRouter from '../utils/withRouter';
 import { MdLocalOffer, MdDeleteSweep } from 'react-icons/md';
-import { HiMinusSm, HiPlusSm } from 'react-icons/hi';
+import { HiMinusSm, HiPlusSm, HiOutlineArrowNarrowLeft } from 'react-icons/hi'; // Thêm icon quay lại
 import Swal from 'sweetalert2';
+import { Link } from 'react-router-dom';
 
 class Mycart extends Component {
   static contextType = MyContext;
@@ -13,17 +14,15 @@ class Mycart extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      txtCoupon: '', // Lưu mã khách nhập
-      discount: 0    // Lưu % giảm giá nhận từ server
+      txtCoupon: '',
+      discount: 0
     };
   }
 
-  // Hàm xử lý khi gõ mã
   txtCouponChange = (e) => {
     this.setState({ txtCoupon: e.target.value });
   }
 
-  // Hàm gọi API áp dụng mã
   btnApplyCouponClick = () => {
     const code = this.state.txtCoupon.trim();
     if (!code) {
@@ -37,13 +36,12 @@ class Mycart extends Component {
         this.setState({ discount: result.percent });
         Swal.fire('Thành công', `Đã áp dụng mã giảm giá ${result.percent}%`, 'success');
       } else {
-        this.setState({ discount: 0 }); // Reset nếu mã sai
+        this.setState({ discount: 0 });
         Swal.fire('Thất bại', result.message, 'error');
       }
     });
   }
 
-  // Tăng giảm số lượng
   lnkChangeQuantity(id, newQuantity) {
     if (newQuantity < 1) return;
     const mycart = this.context.mycart;
@@ -86,11 +84,11 @@ class Mycart extends Component {
           <td className="text-stone-600 font-medium">{item.product.price.toLocaleString()} ₫</td>
           <td className="py-6 text-center">
             <div className="flex items-center justify-center gap-3">
-              <button onClick={() => this.lnkChangeQuantity(item.product._id, item.quantity - 1)} className="w-8 h-8 rounded-full border border-stone-200 flex items-center justify-center hover:bg-stone-100 disabled:opacity-30" disabled={item.quantity <= 1}>
+              <button onClick={() => this.lnkChangeQuantity(item.product._id, item.quantity - 1)} className="w-8 h-8 rounded-full border border-stone-200 flex items-center justify-center hover:bg-stone-100 disabled:opacity-30 text-[#442c1e]" disabled={item.quantity <= 1}>
                 <HiMinusSm />
               </button>
               <span className="font-semibold text-[#2d1b0f]">{item.quantity}</span>
-              <button onClick={() => this.lnkChangeQuantity(item.product._id, item.quantity + 1)} className="w-8 h-8 rounded-full border border-stone-200 flex items-center justify-center hover:bg-stone-100">
+              <button onClick={() => this.lnkChangeQuantity(item.product._id, item.quantity + 1)} className="w-8 h-8 rounded-full border border-stone-200 flex items-center justify-center hover:bg-stone-100 text-[#442c1e]">
                 <HiPlusSm />
               </button>
             </div>
@@ -116,12 +114,21 @@ class Mycart extends Component {
                   <th className="pb-4 text-end">Tổng cộng</th>
                 </tr>
               </thead>
-              <tbody>{mycart}</tbody>
+              <tbody>{this.context.mycart.length > 0 ? mycart : (
+                <tr><td colSpan="4" className="py-20 text-center text-stone-400 italic">Giỏ hàng trống...</td></tr>
+              )}</tbody>
             </table>
+
+            {/* Nút QUAY LẠI hiện rõ ràng */}
+            <div className="mt-10">
+              <Link to='/products' className="inline-flex items-center gap-2 px-6 py-3 rounded-full border-2 border-stone-200 text-stone-600 font-bold text-sm hover:bg-stone-100 transition-all shadow-sm">
+                <HiOutlineArrowNarrowLeft size={20}/> TIẾP TỤC THƯỞNG THỨC
+              </Link>
+            </div>
           </div>
 
           <div className="flex-1">
-            <div className="bg-white rounded-[2.5rem] p-8 shadow-xl border border-stone-100">
+            <div className="bg-white rounded-[2.5rem] p-8 shadow-xl border border-stone-100 sticky top-28">
                 <h2 className="text-xl font-serif font-bold text-[#2d1b0f] mb-6 pb-4 border-b border-stone-100">Tóm tắt đơn hàng</h2>
                 <div className="space-y-4">
                     <div className="flex justify-between text-stone-500">
@@ -130,7 +137,7 @@ class Mycart extends Component {
                     </div>
 
                     {this.state.discount > 0 && (
-                      <div className="flex justify-between text-orange-600 font-bold">
+                      <div className="flex justify-between text-orange-600 font-bold animate__animated animate__fadeInDown">
                           <span>Giảm giá ({this.state.discount}%)</span>
                           <span>-{discountAmount.toLocaleString()} ₫</span>
                       </div>
@@ -148,12 +155,12 @@ class Mycart extends Component {
                         <div className="flex gap-2">
                             <input 
                                 type="text" 
-                                className="flex-1 bg-white border border-orange-200 rounded-xl px-4 py-2 text-sm" 
+                                className="flex-1 bg-white border border-orange-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-orange-300 outline-none" 
                                 placeholder="Nhập mã..." 
                                 value={this.state.txtCoupon}
                                 onChange={this.txtCouponChange}
                             />
-                            <button onClick={this.btnApplyCouponClick} className="bg-orange-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-orange-700">ÁP DỤNG</button>
+                            <button onClick={this.btnApplyCouponClick} className="bg-orange-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-orange-700 transition-colors shadow-sm">ÁP DỤNG</button>
                         </div>
                     </div>
 
@@ -165,7 +172,8 @@ class Mycart extends Component {
                         </div>
                     </div>
 
-                    <button onClick={() => this.lnkCheckoutClick(finalTotal)} className="w-full mt-8 bg-[#2d1b0f] text-white py-4 rounded-full font-bold shadow-lg hover:bg-[#442c1e] transition-all">
+                    {/* Nút ĐẶT HÀNG hiện rõ rệt */}
+                    <button onClick={() => this.lnkCheckoutClick(finalTotal)} className="w-full mt-8 bg-[#2d1b0f] text-white py-4 rounded-full font-bold shadow-lg hover:bg-[#442c1e] transition-all active:scale-95">
                         TIẾN HÀNH ĐẶT HÀNG
                     </button>
                 </div>
@@ -176,17 +184,19 @@ class Mycart extends Component {
     );
   }
 
-  // Cập nhật hàm Checkout để gửi cả số tiền đã giảm
   lnkCheckoutClick(total) {
     if (this.context.mycart.length > 0) {
       if (this.context.customer) {
         Swal.fire({
           title: 'Xác nhận đơn hàng',
-          text: `Tổng thanh toán: ${total.toLocaleString()} ₫. Đặt hàng ngay?`,
+          text: `Tổng thanh toán: ${total.toLocaleString()} ₫. Bạn muốn đặt hàng ngay?`,
           icon: 'question',
           showCancelButton: true,
-          confirmButtonColor: '#2d1b0f',
-          confirmButtonText: 'Đặt hàng ngay!'
+          confirmButtonColor: '#2d1b0f', // Nâu Next Coffee
+          cancelButtonColor: '#d33',     // Đỏ để hiện rõ nút Hủy
+          confirmButtonText: 'Đặt hàng ngay!',
+          cancelButtonText: 'Kiểm tra lại',
+          reverseButtons: true // Đưa nút xác nhận sang phải cho thuận tay
         }).then((result) => {
           if (result.isConfirmed) {
             this.apiCheckout(total, this.context.mycart, this.context.customer);
@@ -204,7 +214,13 @@ class Mycart extends Component {
     axios.post('/api/customer/checkout', body, config).then((res) => {
       if (res.data) {
         this.context.setMycart([]);
-        Swal.fire({ icon: "success", title: "Đã nhận đơn hàng!", timer: 2000 });
+        Swal.fire({ 
+            icon: "success", 
+            title: "Đã nhận đơn hàng!", 
+            text: "Cảm ơn bạn đã ủng hộ Next Coffee!",
+            showConfirmButton: false,
+            timer: 2000 
+        });
         this.props.navigate('/home');
       }
     });

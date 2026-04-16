@@ -4,7 +4,7 @@ import withRouter from "../utils/withRouter";
 import MyContext from "../contexts/MyContext";
 import Modal from "react-modal";
 import Swal from "sweetalert2";
-import { FaCartPlus, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaCartPlus} from "react-icons/fa";
 import { MdOutlineZoomOutMap, MdOutlineLocalShipping, MdVerifiedUser } from "react-icons/md";
 
 Modal.setAppElement("#root");
